@@ -1,0 +1,68 @@
+.party-section {
+    background: #fff9e3;
+    padding: 30px;
+    border-top: 5px solid #c2a869;
+    border-bottom: 5px solid #c2a869;
+  }
+  
+  .party-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .party-header h2 {
+    font-family: 'Cloister Black';                                     
+    font-style: normal; font-variant: normal; font-weight: 500; line-height: 26.4px;
+    font-size: 100px;
+    color: #4b2e13;
+  }
+  
+  .party-header p {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: #3a2c1a;
+    max-width: 60%;
+    text-align: right;
+  }
+  
+  .party-carousel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  
+  .party-card {
+    min-width: 485px;
+    background: #fdf5d3;
+    border: 3px solid #c2a869;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  }
+  
+  .party-card img {
+    width: 450px;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 5px;
+  }
+  
+  .party-card h3 {
+    font-family: 'MedievalSharp';
+    color: #4b2e13;
+    font-size: 32px;
+    text-align: left;
+  }
+  
+  .party-card p {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: #3a2c1a;
+    text-align: left;
+  }
+  

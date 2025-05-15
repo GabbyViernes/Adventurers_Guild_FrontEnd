@@ -1,38 +1,73 @@
-.App {
+.megamenu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #4b2e13;
+  padding: 15px 30px;
+  border-bottom: 5px solid #c2a869;
+}
+
+.megamenu-left a,
+.megamenu-right .auth-button {
+  color: #ffeec7;
+  font-weight: bold;
+  text-decoration: none;
+  margin-right: 20px;
+  font-family: 'Cinzel', serif;
+}
+
+.megamenu-left a:hover {
+  color: #f4d57d;
+}
+
+.megamenu-center {
+  flex: 1;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.Logo{
+  margin-left: 500px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.auth-button {
+  background: transparent;
+  border: 2px solid #c2a869;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #ffeec7;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  margin-left: 10px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.auth-button:hover {
+  background-color: #c2a869;
+  color: #4b2e13;
 }
 
-.App-link {
-  color: #61dafb;
+.hero-banner img {
+  width: 100%;
+  height: 608px;
+  object-fit: cover;
+  display: block;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.description {
+  background: #fff9e3;
+
+  text-align: center;
+  padding: 30px 20px;
+  border-bottom: 4px double #c2a869;
+}
+
+.description h2 {
+  font-family: 'MedievalSharp';
+  font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.description p {
+  font-size: 25px;
+  font-family: 'Cinzel', serif;
 }
