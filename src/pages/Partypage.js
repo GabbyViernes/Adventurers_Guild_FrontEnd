@@ -30,55 +30,61 @@ export default function PartyPage(props)  {
 						marginBottom: 13,
 					}}>
 					 <Link 
-    to="/party"
-    style={{
-      textDecoration: 'none',
-      marginRight: 32,
-    }}
-  >
-    <span style={{
-      color: "#1A120B",
-      fontSize: 16,
-      cursor: 'pointer',
-      transition: 'color 0.3s',
-    }}>
-      {"Join Party"}
-    </span>
-  </Link>
+                        to="/party"
+                        style={{
+                        textDecoration: 'none',
+                        marginRight: 32,
+                        marginTop: 58,
+                        }}
+                    >
+                        <span style={{
+                        color: "#1A120B",
+                        fontSize: 16,
+                        cursor: 'pointer',
+                        transition: 'color 0.3s',
+                        marginTop: 58,
+                        }}>
+                        {"Join Party"}
+                        </span>
+                    </Link>
 
-  <Link 
-    to="/quests"
-    style={{
-      textDecoration: 'none',
-      marginRight: 40,
-    }}
-  >
-    <span style={{
-      color: "#1A120B",
-      fontSize: 16,
-      cursor: 'pointer',
-      transition: 'color 0.3s',
-    }}>
-      {"Quests"}
-    </span>
-  </Link>
+                    <Link 
+                        to="/quests"
+                        style={{
+                        textDecoration: 'none',
+                        marginRight: 40,
+                        marginTop: 58,
+                        }}
+                    >
+                        <span style={{
+                        color: "#1A120B",
+                        fontSize: 16,
+                        cursor: 'pointer',
+                        transition: 'color 0.3s',
+                        marginTop: 58,
+                        }}>
+                        {"Quests"}
+                        </span>
+                    </Link>
 
-  <Link 
-    to="/vault"
-    style={{
-      textDecoration: 'none',
-      marginRight: 40,
-    }}
-  >
-    <span style={{
-      color: "#1A120B",
-      fontSize: 16,
-      cursor: 'pointer',
-      transition: 'color 0.3s',
-    }}>
-      {"Vault"}
-    </span>
-  </Link>
+                    <Link 
+                        to="/vault"
+                        style={{
+                        textDecoration: 'none',
+                        marginTop: 58,
+                        marginRight: 40,
+                        }}
+                    >
+                        <span style={{
+                        color: "#1A120B",
+                        fontSize: 16,
+                        cursor: 'pointer',
+                        marginTop: 58,
+                        transition: 'color 0.3s',
+                        }}>
+                        {"Vault"}
+                        </span>
+                    </Link>
 					<span 
 						style={{
 							color: "#1A120B",
@@ -129,7 +135,7 @@ export default function PartyPage(props)  {
 							marginTop: 40,
 							textAlign: "left",
 						}}
-						onClick={()=>alert("Pressed!")}>
+						onClick={()=>navigate("/profile")}>
 						<span 
 							style={{
 								color: "#F6F6F6",

@@ -34,6 +34,7 @@ export default function ProfilePage(props)  {
     style={{
       textDecoration: 'none',
       marginRight: 32,
+	  marginTop: 58,
     }}
   >
     <span style={{
@@ -51,6 +52,7 @@ export default function ProfilePage(props)  {
     style={{
       textDecoration: 'none',
       marginRight: 40,
+	  marginTop: 58,
     }}
   >
     <span style={{
@@ -68,6 +70,7 @@ export default function ProfilePage(props)  {
     style={{
       textDecoration: 'none',
       marginRight: 40,
+	  marginTop: 58,
     }}
   >
     <span style={{

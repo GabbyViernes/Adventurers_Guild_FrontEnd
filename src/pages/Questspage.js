@@ -19,6 +19,7 @@ export default function QuestsPage(props) {
 					flexDirection: "column",
 					alignItems: "flex-start",
 					background: "#F6F6F6",
+					
 				}}>
 				<div 
 					style={{
@@ -34,6 +35,7 @@ export default function QuestsPage(props) {
     style={{
       textDecoration: 'none',
       marginRight: 32,
+	  marginTop: 58,
     }}
   >
     <span style={{
@@ -51,6 +53,7 @@ export default function QuestsPage(props) {
     style={{
       textDecoration: 'none',
       marginRight: 40,
+	  marginTop: 58,
     }}
   >
     <span style={{
@@ -68,6 +71,7 @@ export default function QuestsPage(props) {
     style={{
       textDecoration: 'none',
       marginRight: 40,
+	  marginTop: 58,
     }}
   >
     <span style={{
