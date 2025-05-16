@@ -5,6 +5,9 @@ import './pages/PartySectionUN';
 import PartySection from './pages/PartySectionUN';
 import './pages/QuestSectionUN';
 import QuestSection from './pages/QuestSectionUN';
+import './pages/VaultSectionUN';
+import VaultSection from './pages/VaultSectionUN';
+import AdventurersFooter from './pages/AdGuFootUN';
 
 
 function App() {
@@ -56,11 +59,16 @@ function App() {
       <div ref={partyRef}>
   <QuestSection />
 </div>
-      
+      <div ref={partyRef}>
+  <VaultSection />
+</div>
+      <div ref={partyRef}>
+  <AdventurersFooter />
+  </div>
 
+    
 
-   
-    </div>
+</div>
   );
 }
 

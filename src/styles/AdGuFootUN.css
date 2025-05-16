@@ -1,0 +1,97 @@
+.guild-footer {
+  font-family: 'Garamond', serif;
+  background-color: #1c1a1a;
+  color: #f5f2e8;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-col.left h2 {
+  font-size: 2rem;
+  color: #e3c77e;
+}
+
+.footer-menu {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+.footer-menu li {
+  margin: 0.5rem 0;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.footer-col.right p {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.newsletter {
+  display: flex;
+  align-items: center;
+}
+
+.newsletter input {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 2rem 0 0 2rem;
+  outline: none;
+  width: 180px;
+}
+
+.newsletter button {
+  padding: 0.5rem 1rem;
+  background-color: #e3c77e;
+  border: none;
+  border-radius: 0 2rem 2rem 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  font-size: 0.9rem;
+  border-top: 1px solid #444;
+  flex-wrap: wrap;
+}
+
+.bottom-left,
+.bottom-center,
+.bottom-right {
+  margin: 0.5rem 0;
+}
+
+.social-icon {
+  margin-left: 1rem;
+  cursor: pointer;
+  color: #e3c77e;
+  transition: color 0.3s;
+}
+
+.social-icon:hover {
+  color: #fff;
+}

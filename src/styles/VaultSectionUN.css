@@ -1,0 +1,64 @@
+.vault-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  background-color: #f8f1dc;
+  font-family: 'Garamond', serif;
+  border-radius: 1rem;
+  color: #2d2d2d;
+}
+
+.vault-left {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.vault-left h2 {
+  font-size: 3rem;
+  color: #2c1d0e;
+  margin: 0;
+}
+
+.vault-right {
+  flex: 3;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.vault-image {
+  width: 100%;
+  max-width: 895px;
+  height: 560px;
+}
+
+.vault-description {
+  position: absolute;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  max-width: 50%;
+}
+
+.vault-description p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  margin-top: 70px ;
+}
+
+.rounded-button {
+  background: #6b4d27;
+  color: #fff8e1;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.rounded-button:hover {
+  background: #8c6736;
+}

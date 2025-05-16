@@ -43,7 +43,7 @@ function QuestsSection() {
     <div className="quests-section">
       <div className="quests-header">
         <h2>Quests</h2>
-        <p>Embark on daring missions across the realm. Choose your path wisely.</p>
+        <p>Brave souls may take on quests ranging from simple errands to perilous adventures, each offering coin, glory, or rare treasures. Whether slaying beasts, retrieving lost relics, or aiding townsfolk, every quest shapes the legend of those who dare to accept it!</p>
       </div>
 
       <div className="quests-body">
