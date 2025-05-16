@@ -1,0 +1,130 @@
+/* Main container: form + image side by side */
+.signup-section {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  gap: 40px;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+/* Form container (left 50%) */
+.signup-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Image container (right 50%) */
+.signup-image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Responsive image */
+.signup-image {
+  max-width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* Section titles */
+.signup-section-title {
+  font-weight: 700;
+  font-size: 22px;
+  color: #1A120B;
+  margin-bottom: 15px;
+  user-select: none;
+}
+
+/* Input fields styling */
+.signup-input {
+  width: 100%;
+  height: 48px;
+  padding: 12px 16px;
+  font-size: 18px;
+  color: #1A120B;
+  border: 1.8px solid #1A120B;
+  border-radius: 8px;
+  background: #fafafa;
+  box-sizing: border-box;
+  transition: border-color 0.25s ease;
+}
+
+.signup-input:focus {
+  border-color: #7D5FFF;
+  outline: none;
+  background: #fff;
+}
+
+/* Horizontal input groups for skills and name/class */
+.input-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.input-row .signup-input {
+  flex: 1;
+}
+
+/* Skill input groups vertical stack */
+.skill-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+/* Skill label row */
+.skill-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.skill-label {
+  font-weight: 600;
+  color: #1A120B;
+  font-size: 16px;
+  user-select: none;
+}
+
+/* Buttons */
+.signup-button {
+  width: 100%;
+  padding: 16px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #7D5FFF;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.signup-button:hover {
+  background-color: #624edd;
+}
+
+/* Footer disclaimer text */
+.signup-footer-text {
+  font-size: 14px;
+  color: #1A120B;
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.4;
+  user-select: none;
+}
