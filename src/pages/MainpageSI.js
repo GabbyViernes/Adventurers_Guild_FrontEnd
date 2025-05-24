@@ -121,6 +121,13 @@ export default function MainPageSI(props) {
 						{"Vault"}
 						</span>
 					</Link>
+						<Link
+							to="/profile"
+								style={{
+								textDecoration: 'none',
+								marginRight:40,
+								}}
+						>
 					<span 
 						style={{
 							color: "#1A120B",
