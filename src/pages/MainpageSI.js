@@ -121,6 +121,13 @@ export default function MainPageSI(props) {
 						{"Vault"}
 						</span>
 					</Link>
+						<Link
+							to="/profile"
+								style={{
+								textDecoration: 'none',
+								marginRight:40,
+								}}
+						>
 					<span 
 						style={{
 							color: "#1A120B",
@@ -129,6 +136,7 @@ export default function MainPageSI(props) {
 						}} >
 						{"Inventory"}
 					</span>
+						</Link>
 					<img
 						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
 						style={{
