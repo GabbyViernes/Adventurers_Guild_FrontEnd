@@ -27,7 +27,7 @@ function MainPage() {
           <a href="/party">Join Party</a>
             <a onClick={()=>navigate("/quests")}>Quest</a>
           <a href="/vault">Vault</a>
-          <a href="#">Inventory</a>
+          <a onClick={()}=>navigate("/profile")}>Inventory</a>
         </div>
         <div className="megamenu-center">
         <img src="/image 3.png" alt="Logo" className='Logo' />
