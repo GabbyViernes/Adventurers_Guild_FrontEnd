@@ -25,7 +25,7 @@ function MainPage() {
       <div className="megamenu">
         <div className="megamenu-left">
           <a href="/party">Join Party</a>
-          <a href="/quest">Quest</a>
+            <a onClick={()=>navigate("/quests")}>Quest</a>
           <a href="/vault">Vault</a>
           <a href="#">Inventory</a>
         </div>
