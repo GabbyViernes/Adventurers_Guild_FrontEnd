@@ -321,8 +321,11 @@ export default function MainPageUN() {
 								paddingLeft: 155,
 								paddingRight: 155,
 								textAlign: "left",
-								marginTop: 50,
+								marginTop: 150,
 								marginBottom: 0,
+								position:"absolute",
+								left: "38%",
+								
 							}}
 							onClick={()=>navigate("/party")}>
 							<span 
@@ -568,7 +571,7 @@ export default function MainPageUN() {
     padding: 0,
     margin: 0,
     cursor: "pointer",
-    textAlign: "centerleft",
+    textAlign: "left",
     width: "100%",
     marginBottom: 21,
   }}

@@ -301,6 +301,8 @@ export default function MainPageSI(props) {
 								textAlign: "left",
 								marginTop: 50,
 								marginBottom: 0,
+								position: "relative",
+								left: 680, // Adjusted to center the button
 								
 								
 							}}
