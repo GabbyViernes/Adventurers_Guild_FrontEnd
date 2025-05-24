@@ -116,36 +116,37 @@ export default function ProfilePage(props)  {
 						}} >
 						{"NEWS"}
 					</span>
-					<button 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							background: "#3C2A21",
-							borderRadius: 50,
-							border: "none",
-							paddingTop: 18,
-							paddingBottom: 18,
-							paddingLeft: 35,
-							paddingRight: 35,
-							marginTop: 40,
-							textAlign: "left",
-						}}
-						onClick={()=>alert("Pressed!")}>
-						<span 
-							style={{
-								color: "#F6F6F6",
-								fontSize: 16,
-							}} >
-							{"Profile"}
-						</span>
-					</button>
+				<button 
+  style={{
+    flexShrink: 0,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    background: "#3C2A21",
+    borderRadius: 50,
+    border: "none",
+    paddingTop: 18,
+    paddingBottom: 18,
+    paddingLeft: 35,
+    paddingRight: 35,
+    marginTop: 40,
+    textAlign: "left",
+  }}
+  onClick={() => navigate("/login")}>
+  <span 
+    style={{
+      color: "#F6F6F6",
+      fontSize: 16,
+    }} >
+    {"Logout"} 
+  </span>
+</button>
 				</div>
 				<span 
 					style={{
+						fontFamily: "'Cloister Black', serif",
 						color: "#1A120B",
-						fontSize: 80,
+						fontSize: 100,
 						marginBottom: 60,
 						marginLeft: 40,
 					}} >
@@ -167,7 +168,9 @@ export default function ProfilePage(props)  {
 							objectFit: "fill",
 							marginLeft: 40,
 						}}
+						
 					/>
+				
 					<div 
 						style={{
 							flexShrink: 0,

@@ -145,8 +145,9 @@ export default function QuestsPage(props) {
 				</div>
 				<span 
 					style={{
+						fontFamily: "'Cloister Black', serif",
 						color: "#1A120B",
-						fontSize: 80,
+						fontSize: 100,
 						marginBottom: 40,
 						marginLeft: 40,
 					}} >
@@ -195,8 +196,9 @@ export default function QuestsPage(props) {
 								}}>
 								<span 
 									style={{
+										fontFamily: "'Cloister Black', serif",
 										color: "#1A120B",
-										fontSize: 32,
+										fontSize: 40,
 									}} >
 									{"A Merchant’s Misfortune"}
 								</span>
@@ -331,8 +333,9 @@ export default function QuestsPage(props) {
 								}}>
 								<span 
 									style={{
+										fontFamily: "'Cloister Black', serif",
 										color: "#1A120B",
-										fontSize: 32,
+										fontSize: 40,
 									}} >
 									{"Ale and Antics"}
 								</span>
@@ -478,8 +481,9 @@ export default function QuestsPage(props) {
 								}}>
 								<span 
 									style={{
+										fontFamily: "'Cloister Black', serif",
 										color: "#1A120B",
-										fontSize: 32,
+										fontSize: 40,
 									}} >
 									{"Escort the Arcane"}
 								</span>
@@ -614,8 +618,9 @@ export default function QuestsPage(props) {
 								}}>
 								<span 
 									style={{
+										fontFamily: "'Cloister Black', serif",
 										color: "#1A120B",
-										fontSize: 32,
+										fontSize: 40,
 									}} >
 									{"Plague Rats"}
 								</span>
@@ -897,10 +902,11 @@ export default function QuestsPage(props) {
 								}}>
 								<span 
 									style={{
+										fontFamily: "'Cloister Black', serif",
 										color: "#1A120B",
-										fontSize: 32,
+										fontSize: 40,
 									}} >
-									{"Plague Rats"}
+									{"Whispers of the Hollow Oak"}
 								</span>
 								<span 
 									style={{
@@ -916,7 +922,7 @@ export default function QuestsPage(props) {
 									fontSize: 16,
 									width: 520,
 								}} >
-								{"The local tavern is in dire need of a bard for their festival, but none have answered the call. If ye have a way with song or tale, come forth and earn a handsome reward in coin and cheer!"}
+								{"Mysterious whispers echo from an ancient tree in Elderglen Forest. Uncover its secrets and choose to seal its magic—or unleash it."}
 							</span>
 						</div>
 						<div 
@@ -928,6 +934,7 @@ export default function QuestsPage(props) {
 									alignSelf: "stretch",
 									display: "flex",
 									alignItems: "flex-start",
+									marginTop: 31,
 									marginBottom: 14,
 									marginLeft: 5,
 									marginRight: 5,
@@ -1040,8 +1047,9 @@ export default function QuestsPage(props) {
 								}}>
 								<span 
 									style={{
+										fontFamily: "'Cloister Black', serif",
 										color: "#1A120B",
-										fontSize: 32,
+										fontSize: 40,
 									}} >
 									{"Loading..."}
 								</span>
@@ -1172,8 +1180,9 @@ export default function QuestsPage(props) {
 								}}>
 								<span 
 									style={{
+										fontFamily: "'Cloister Black', serif",
 										color: "#1A120B",
-										fontSize: 32,
+										fontSize: 40,
 									}} >
 									{"Loading..."}
 								</span>

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import useQuestStore from "../components/QuestCarousel";
 
+
 const questData = [
   {
     title: "A Merchant's Misfortune",
@@ -32,7 +33,8 @@ const questData = [
   },
 ];
 
-export default function MainPageSI(props) {
+export default function MainPageUN() {
+
   // Correct Zustand usage
   const activeIndex = useQuestStore(state => state.activeIndex);
   const setActiveIndex = useQuestStore(state => state.setActiveIndex);
@@ -72,7 +74,7 @@ export default function MainPageSI(props) {
 						marginRight: 40,
 					}}>
 										<Link 
-						to="/party"
+						to="/login"
 						style={{
 						textDecoration: 'none',
 						marginRight: 32,
@@ -89,7 +91,7 @@ export default function MainPageSI(props) {
 					</Link>
 
 					<Link 
-						to="/quests"
+						to="/login"
 						style={{
 						textDecoration: 'none',
 						marginRight: 40,
@@ -106,7 +108,7 @@ export default function MainPageSI(props) {
 					</Link>
 
 					<Link 
-						to="/vault"
+						to="/login"
 						style={{
 						textDecoration: 'none',
 						marginRight: 40,
@@ -144,14 +146,30 @@ export default function MainPageSI(props) {
 							alignSelf: "stretch",
 						}}>
 					</div>
-					<span 
+						<button 
 						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginRight: 64,
-						}} >
-						{"NEWS"}
-					</span>
+							flexShrink: 0,
+							display: "flex",
+							flexDirection: "column",
+							alignItems: "flex-start",
+							background: "#D5CEA3",
+							borderRadius: 50,
+							border: "none",
+							paddingTop: 18,
+							paddingBottom: 18,
+							paddingLeft: 35,
+							paddingRight: 35,
+							textAlign: "left",
+						}}
+						onClick={()=>navigate("/login")}>
+						<span 
+							style={{
+								color: "#1A120B",
+								fontSize: 16,
+							}} >
+							{"Login"}
+						</span>
+					</button>
 					<button 
 						style={{
 							flexShrink: 0,
@@ -166,14 +184,15 @@ export default function MainPageSI(props) {
 							paddingLeft: 35,
 							paddingRight: 35,
 							textAlign: "left",
+							marginLeft: 30,
 						}}
-						onClick={()=>navigate("/profile")}>
+						onClick={()=>navigate("/signup")}>
 						<span 
 							style={{
 								color: "#F6F6F6",
 								fontSize: 16,
 							}} >
-							{"Profile"}
+							{"Sign Up"}
 						</span>
 					</button>
 				</div>
@@ -208,15 +227,17 @@ export default function MainPageSI(props) {
 						marginRight: 40,
 					}}>
 				</div>
-				<div 
+				<div
+					
 					style={{
+						borderRadius: 50,
+						border: "none",
 						alignSelf: "stretch",
 						display: "flex",
 						alignItems: "center",
 						marginBottom: 44,
 						marginLeft: 60,
 						marginRight: 60,
-						
 					}}>
 					
 					<span 
@@ -228,6 +249,7 @@ export default function MainPageSI(props) {
 						}} >
 						{"Party"}
 					</span>
+					
 					<span 
 						style={{
 							color: "#1A120B",
@@ -301,8 +323,6 @@ export default function MainPageSI(props) {
 								textAlign: "left",
 								marginTop: 50,
 								marginBottom: 0,
-								
-								
 							}}
 							onClick={()=>navigate("/party")}>
 							<span 
@@ -549,7 +569,8 @@ export default function MainPageSI(props) {
     margin: 0,
     cursor: "pointer",
     textAlign: "centerleft",
-    marginBottom: 40,
+    width: "100%",
+    marginBottom: 21,
   }}
   onClick={() => navigate("/quests")}>
   <span 
@@ -596,7 +617,7 @@ export default function MainPageSI(props) {
           activeIndex={activeIndex} 
           onSelect={handleSelect} 
           interval={4000}
-          style={{ height: "100%",
+          style={{ height: "100%", 
 			width: "1270px",
 		  }}
         >
@@ -628,7 +649,8 @@ export default function MainPageSI(props) {
 								paddingRight: 155,
 								textAlign: "left",
 								marginLeft: -530,
-								marginTop: -65,
+								marginTop: -70,
+						
 							}}
 							onClick={()=>navigate("/quests")}>
 							<span 

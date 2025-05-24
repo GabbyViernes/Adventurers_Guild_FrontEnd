@@ -6,8 +6,19 @@ export default (props) => {
 	const [input3, onChangeInput3] = useState('');
 	const [input4, onChangeInput4] = useState('');
 	const [input5, onChangeInput5] = useState('');
-    const navigate = useNavigate();
-	return (
+  	const navigate = useNavigate();
+  	const [signupData, setSignupData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+
+  const handleSignup = (e) => {
+    e.preventDefault();
+    
+    navigate('/login'); // Redirect to login after signup
+  };
+  return (
 		<div 
 			style={{
 				display: "flex",
@@ -21,7 +32,7 @@ export default (props) => {
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "flex-start",
-					background: "#F6F6F6",
+					
 				}}>
 				<div 
 					style={{
@@ -415,10 +426,10 @@ export default (props) => {
 						</span>
 					</div>
 					<img
-						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/9qhizj7h_expires_30_days.png"} 
+						src={"dnd__morning_at_human_city__by_bergionstyle_dg4v4aa-fullview.jpg"} 
 						style={{
-							width: 1020,
-							height: 1822,
+							width: 1000,
+							height: 1300,
 							objectFit: "fill",
 						}}
 					/>
@@ -457,7 +468,7 @@ export default (props) => {
 							display: "flex",
 							flexDirection: "column",
 							alignItems: "flex-start",
-							marginRight: 252,
+							marginRight: 230,
 						}}>
 						<span 
 							style={{

@@ -4,7 +4,24 @@ export default function LoginPage(props) {
 	const [input1, onChangeInput1] = useState('');
 	const [input2, onChangeInput2] = useState('');
 	const [input3, onChangeInput3] = useState('');
-    const navigate = useNavigate();
+  	const navigate = useNavigate();
+  	const [credentials, setCredentials] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+	try {
+    // await authService.login(credentials);
+    navigate('/loading'); // This must be present
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
+   
+    navigate('/loading'); // Redirect to loading screen
+  };
+
 	return (
 		<div 
 			style={{
@@ -19,7 +36,7 @@ export default function LoginPage(props) {
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "flex-start",
-					background: "#F6F6F6",
+					
 				}}>
 				<div 
 					style={{
@@ -270,10 +287,10 @@ export default function LoginPage(props) {
 						</span>
 					</div>
 					<img
-						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/aq9n5nnx_expires_30_days.png"} 
+						src={"dnd__morning_at_human_city__by_bergionstyle_dg4v4aa-fullview.jpg"} 
 						style={{
-							width: 900,
-							height: 922,
+							width: 865,
+							height: 1000,
 							objectFit: "fill",
                             marginLeft: 70,
 						}}

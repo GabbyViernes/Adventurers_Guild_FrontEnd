@@ -156,8 +156,9 @@ export default function PartyPage(props)  {
 					}}>
 					<span 
 						style={{
+							fontFamily: "'Cloister Black', serif",
 							color: "#1A120B",
-							fontSize: 80,
+							fontSize: 100,
 							flex: 1,
 						}} >
 						{"Party"}
@@ -251,6 +252,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -347,6 +349,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -442,6 +445,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -548,6 +552,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -644,6 +649,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -739,6 +745,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -842,6 +849,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -935,6 +943,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
@@ -1027,6 +1036,7 @@ export default function PartyPage(props)  {
 							}}>
 							<span 
 								style={{
+									fontFamily: "'Cloister Black', serif",
 									color: "#1A120B",
 									fontSize: 32,
 									marginBottom: 15,
