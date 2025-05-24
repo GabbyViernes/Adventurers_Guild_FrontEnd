@@ -131,15 +131,17 @@ export default function MainPageUN() {
 						}} >
 						{"Inventory"}
 					</span>
-					<img
-						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
-						style={{
-							width: 87,
-							height: 87,
-							objectFit: "fill",
-							marginLeft: 250,
-						}}
-					/>
+					<Link
+										to="/">
+										<img
+											src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
+											style={{
+												width: 87,
+												height: 87,
+												objectFit: "fill",
+												marginLeft: 250,
+											}}
+										/></Link>
 					<div 
 						style={{
 							flex: 1,

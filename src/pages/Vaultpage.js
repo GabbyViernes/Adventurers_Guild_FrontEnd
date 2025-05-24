@@ -91,17 +91,18 @@ export default function Vaultpage(props) {
 						}} >
 						{"Inventory"}
 					</span>
-					<img
-						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/eq1wylr4_expires_30_days.png"} 
-                        onClick={()=>navigate("/MainSI")}
-						style={{
-							width: 87,
-							height: 87,
-							marginTop: 20,
-							objectFit: "fill",
-                            marginLeft: 300,
-						}}
-					/>
+					<Link
+										to="/MainSI">
+										<img
+											src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
+											style={{
+												width: 87,
+												height: 87,
+												objectFit: "fill",
+												marginLeft: 250,
+												marginTop: 30,
+											}}
+										/></Link>
 					<div 
 						style={{
 							flex: 1,

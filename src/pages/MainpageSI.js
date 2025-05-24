@@ -129,6 +129,8 @@ export default function MainPageSI(props) {
 						}} >
 						{"Inventory"}
 					</span>
+					<Link
+					to="/MainSI">
 					<img
 						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
 						style={{
@@ -136,8 +138,9 @@ export default function MainPageSI(props) {
 							height: 87,
 							objectFit: "fill",
 							marginLeft: 250,
+							marginTop: 10,
 						}}
-					/>
+					/></Link>
 					<div 
 						style={{
 							flex: 1,
