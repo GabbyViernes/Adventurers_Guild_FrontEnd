@@ -136,6 +136,7 @@ export default function MainPageSI(props) {
 						}} >
 						{"Inventory"}
 					</span>
+					</Link>
 					<Link
 					to="/MainSI">
 					<img
