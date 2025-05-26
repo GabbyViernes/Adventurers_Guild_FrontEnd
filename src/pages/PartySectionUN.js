@@ -70,7 +70,7 @@ function PartySection() {
                             <h3>{party.party_name}</h3>
                             <p className="party-card-description">{party.description || "No description available."}</p>
                             <div className="party-card-info">
-                                <span>Leader: {party.leader_name || "N/A"}</span>
+                                <span>Leader: {party.leader_name || "N/A"}</span> <br></br>
                                 <span>Members: {party.current_member_count}{party.max_members ? `/${party.max_members}` : ''}</span>
                             </div>
                             {/* You could add a more direct "Join" button here if PartyPage handles direct joining via URL params or state */}
