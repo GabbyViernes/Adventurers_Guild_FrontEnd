@@ -72,7 +72,7 @@ export default function MainPageSI(props) {
 						marginRight: 40,
 					}}>
 										<Link 
-						to="/party"
+						to="/joinparty"
 						style={{
 						textDecoration: 'none',
 						marginRight: 32,
@@ -317,7 +317,7 @@ export default function MainPageSI(props) {
 								
 								
 							}}
-							onClick={()=>navigate("/party")}>
+							onClick={()=>navigate("/joinparty")}>
 							<span 
 								style={{
 									color: "#F6F6F6",

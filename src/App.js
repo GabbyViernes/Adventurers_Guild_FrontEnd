@@ -22,7 +22,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/MainSI" element={<MainPageSI />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/party" element={<PartyPage />} />
+        <Route path="/joinparty" element={<PartyPage />} />
         <Route path="/quests" element={<QuestsPage />} />
         <Route path="/createparty" element={<CreatePartyPage/>} />
         <Route path="/vault" element={<VaultPage/>} />

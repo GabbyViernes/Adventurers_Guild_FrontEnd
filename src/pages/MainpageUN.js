@@ -329,7 +329,7 @@ export default function MainPageUN() {
 								left: "38%",
 								
 							}}
-							onClick={()=>navigate("/party")}>
+							onClick={()=>navigate("/joinparty")}>
 							<span 
 								style={{
 									color: "#F6F6F6",
