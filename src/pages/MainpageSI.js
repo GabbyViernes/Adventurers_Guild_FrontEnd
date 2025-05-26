@@ -79,7 +79,7 @@ export default function MainPageSI(props) {
                     }}>
                     <div style={{display: "flex", alignItems: "center", gap: "25px", flexWrap: "wrap"}}>
                         {/* Use Link component for navigation */}
-                        <Link to="/party" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>PARTY</Link>
+                        <Link to="/joinparty" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>PARTY</Link>
                         <Link to="/quests" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>QUESTS</Link>
                         <Link to="/vault" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>VAULT</Link>
                         <Link to="/inventory" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>INVENTORY</Link>
