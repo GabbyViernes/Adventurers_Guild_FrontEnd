@@ -30,7 +30,7 @@ export default function Vaultpage(props) {
 						marginBottom: 13,
 					}}>
 					 <Link 
-    to="/party"
+    to="/joinparty"
     style={{
       textDecoration: 'none',
       marginRight: 32,

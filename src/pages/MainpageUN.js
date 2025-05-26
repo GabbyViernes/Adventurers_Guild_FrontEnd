@@ -1,11 +1,16 @@
+// MainPageUN.js - MODIFIED
+
 import React, {useState} from "react";
 import Carousel from 'react-bootstrap/Carousel';
-import ExampleCarouselImage from '../components/ExampleCarouselImage';
+import ExampleCarouselImage from '../components/ExampleCarouselImage'; // Ensure path is correct
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import useQuestStore from "../components/QuestCarousel";
+import useQuestStore from "../components/QuestCarousel"; // Ensure path is correct
 
+// 1. Import the PartySection component
+import PartySection from './PartySectionUN'; // Adjust path if necessary
 
+// Your existing static questData for the Carousel
 const questData = [
   {
     title: "A Merchant's Misfortune",
@@ -33,973 +38,220 @@ const questData = [
   },
 ];
 
-export default function MainPageUN() {
-
-  // Correct Zustand usage
+export default function MainPageUN() { // Renamed from MainPageSI to match your provided code
   const activeIndex = useQuestStore(state => state.activeIndex);
   const setActiveIndex = useQuestStore(state => state.setActiveIndex);
   
-  const [input1, onChangeInput1] = useState('');
+  const [input1, onChangeInput1] = useState(''); // For newsletter in footer
   const navigate = useNavigate();
 
   const handleSelect = (selectedIndex) => {
     setActiveIndex(selectedIndex);
   };
 
+    return (
+        <div 
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                background: "#FFFFFF",
+            }}>
+            <div 
+                style={{
+                    minHeight: "100vh", // Use minHeight for responsiveness
+                    alignSelf: "stretch",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center", // Center content horizontally
+                    // background: "#F6F6F6", // Moved background to specific sections if needed
+                }}>
+                {/* Header Navigation Section */}
+                <div 
+                    style={{
+                        width: "100%", 
+                        maxWidth: "100%", // Allow header to be full width
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "20px 40px",
+                        boxSizing: "border-box",
+                        background: "#FFFFFF", 
+                        borderBottom: "1px solid #E0E0E0"
+                    }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "25px", flexWrap: "wrap"}}>
+                        <Link to="/joinparty" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>JOIN PARTY</Link>
+                        <Link to="/quests" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>QUESTS</Link>
+                        <Link to="/vault" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>VAULT</Link>
+                        <Link to="/inventory" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>INVENTORY</Link>
+                        {/* Removed profile from this side, it's on the right */}
+                    </div>
+                    
+                    {/* Central Logo */}
+                    {/* To truly center it, it often needs to be outside the flex space-between or use absolute positioning carefully */}
+                    <Link to="/" style={{ flexGrow: 1, textAlign: 'center', margin: '0 20px' }}> 
+                        <img
+                            alt="Guild Home"
+                            src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
+                            style={{ width: 70, height: 70, objectFit: "fill", display: 'inline-block' }}
+                        />
+                    </Link>
 
-	return (
-		<div 
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				background: "#FFFFFF",
-			}}>
-			<div 
-				style={{
-					height: 4324,
-					alignSelf: "stretch",
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "flex-start",
-					
-				}}>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "center",
-						marginTop: 20,
-						marginBottom: 20,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-										<Link 
-						to="/login"
-						style={{
-						textDecoration: 'none',
-						marginRight: 32,
-						}}
-					>
-						<span style={{
-						color: "#1A120B",
-						fontSize: 16,
-						cursor: 'pointer',
-						transition: 'color 0.3s',
-						}}>
-						{"Join Party"}
-						</span>
-					</Link>
+                    <div style={{display: "flex", alignItems: "center", gap: "25px", flexWrap: "wrap"}}>
+                        <Link to="/news" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>NEWS</Link>
+                        <button 
+                            style={{
+                                background: "#3C2A21", color: "#F6F6F6", fontSize: 16,
+                                borderRadius: 50, border: "none", padding: "12px 28px", 
+                                cursor: 'pointer', fontWeight: 500
+                            }}
+                            onClick={()=>navigate("/profile")}>
+                            {"Profile"}
+                        </button>
+                         {/* Login/Signup buttons if user is not authenticated */}
+                         {/* This requires logic to check auth state */}
+                        <button style={{background: "#D5CEA3",color: "#1A120B",fontSize: 16, borderRadius: 50,border: "none",padding: "12px 28px",cursor: 'pointer', fontWeight: 500}} onClick={()=>navigate("/login")}>
+                            {"Login"}
+                        </button>
+                        <button style={{background: "#704F4F", color: "#F6F6F6", fontSize: 16, borderRadius: 50, border: "none", padding: "12px 28px", cursor: 'pointer', fontWeight: 500}} onClick={()=>navigate("/signup")}>
+                            {"Sign Up"}
+                        </button>
+                    </div>
+                </div>
 
-					<Link 
-						to="/login"
-						style={{
-						textDecoration: 'none',
-						marginRight: 40,
-						}}
-					>
-						<span style={{
-						color: "#1A120B",
-						fontSize: 16,
-						cursor: 'pointer',
-						transition: 'color 0.3s',
-						}}>
-						{"Quests"}
-						</span>
-					</Link>
+                {/* Hero Image Section */}
+                <img
+                    alt="Adventurer's Guild Banner"
+                    src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/1d4wwee2_expires_30_days.png"} 
+                    style={{
+                        height: "auto", 
+                        maxHeight: "600px", 
+                        width: "100%", 
+                        marginBottom: 50, 
+                        objectFit: "cover", 
+                    }}
+                />
 
-					<Link 
-						to="/login"
-						style={{
-						textDecoration: 'none',
-						marginRight: 40,
-						}}
-					>
-						<span style={{
-						color: "#1A120B",
-						fontSize: 16,
-						cursor: 'pointer',
-						transition: 'color 0.3s',
-						}}>
-						{"Vault"}
-						</span>
-					</Link>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginRight: 249,
-						}} >
-						{"Inventory"}
-					</span>
-					<Link
-										to="/">
-										<img
-											src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
-											style={{
-												width: 87,
-												height: 87,
-												objectFit: "fill",
-												marginLeft: 250,
-											}}
-										/></Link>
-					<div 
-						style={{
-							flex: 1,
-							alignSelf: "stretch",
-						}}>
-					</div>
-						<button 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							background: "#D5CEA3",
-							borderRadius: 50,
-							border: "none",
-							paddingTop: 18,
-							paddingBottom: 18,
-							paddingLeft: 35,
-							paddingRight: 35,
-							textAlign: "left",
-						}}
-						onClick={()=>navigate("/login")}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 16,
-							}} >
-							{"Login"}
-						</span>
-					</button>
-					<button 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							background: "#3C2A21",
-							borderRadius: 50,
-							border: "none",
-							paddingTop: 18,
-							paddingBottom: 18,
-							paddingLeft: 35,
-							paddingRight: 35,
-							textAlign: "left",
-							marginLeft: 30,
-						}}
-						onClick={()=>navigate("/signup")}>
-						<span 
-							style={{
-								color: "#F6F6F6",
-								fontSize: 16,
-							}} >
-							{"Sign Up"}
-						</span>
-					</button>
-				</div>
-				<img
-					src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/1d4wwee2_expires_30_days.png"} 
-					style={{
-						height: 608,
-						marginBottom: 75,
-						marginLeft: 40,
-						marginRight: 40,
-						alignSelf: "stretch",
-						objectFit: "fill",
-					}}
-				/>
-				<span 
-					style={{
-						color: "#1A120B",
-						fontSize: 40,
-						marginBottom: 68,
-						marginLeft: 40,
-						marginRight: 40,
-					}} >
-					{"Welcome to the Adventurer's Guild, home to bold explorers and treasure hunters! Here you can form parties, take on exciting quests, and store your hard-earned rewards in our secure vaults. We welcome all adventurers, from solo travelers to experienced groups, to embark on epic journeys and build their legacies!"}
-				</span>
-				<div 
-					style={{
-						height: 1,
-						alignSelf: "stretch",
-						background: "#1A120B",
-						marginBottom: 51,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-				</div>
-				<div
-					
-					style={{
-						borderRadius: 50,
-						border: "none",
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "center",
-						marginBottom: 44,
-						marginLeft: 60,
-						marginRight: 60,
-					}}>
-					
-					<span 
-						style={{
-							fontFamily: "'Cloister Black', serif",
-							color: "#1A120B",
-							fontSize: 100,
-							marginRight: 682,
-						}} >
-						{"Party"}
-					</span>
-					
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 20,
-							width: 507,
-							marginLeft: 500,
-						}} >
-						{"Gather thy allies and forge a fellowship of strength and skill! The guild’s party system allows adventurers to band together, ensuring greater fortune and glory on their perilous quests."}
-					</span>
-					
-				</div>
-				<div 
-					style={{
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 80,
-						marginLeft: 40,
-					}}>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "center",
-							marginRight: 20,
-						}}>
-						<img
-							src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/9ywzfqma_expires_30_days.png"} 
-							style={{
-								width: 440,
-								height: 469,
-								marginBottom: 15,
-								objectFit: "fill",
-							}}
-						/>
-						<div 
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "flex-start",
-							}}>
-							<span 
-								style={{
-									fontFamily: "'Cloister Black', serif",
-									color: "#1A120B",
-									fontSize: 32,
-									marginBottom: 15,
-								}} >
-								{"The Ironfang Company"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-									width: 437,
-								}} >
-								{"A band of seasoned warriors and cunning rogues, known for their fearless approach to battle."}
-							</span>
-							<button 
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "flex-start",
-								background: "#3C2A21",
-								borderRadius: 50,
-								border: "none",
-								paddingTop: 21,
-								paddingBottom: 21,
-								paddingLeft: 155,
-								paddingRight: 155,
-								textAlign: "left",
-								marginTop: 150,
-								marginBottom: 0,
-								position:"absolute",
-								left: "38%",
-								
-							}}
-							onClick={()=>navigate("/joinparty")}>
-							<span 
-								style={{
-									color: "#F6F6F6",
-									fontSize: 16,
-								}} >
-								{"DISCOVER MORE"}
-							</span>
-						</button>
-						</div>
-					</div>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							marginRight: 20,
-						}}>
-						<img
-							src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/29457e1v_expires_30_days.png"} 
-							style={{
-								width: 440,
-								height: 469,
-								marginBottom: 15,
-								objectFit: "fill",
-							}}
-						/>
-						<div 
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "flex-start",
-							}}>
-							<span 
-								style={{
-									fontFamily: "'Cloister Black', serif",
-									color: "#1A120B",
-									fontSize: 32,
-									marginBottom: 15,
-								}} >
-								{"The Emberborn Vanguard"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-									width: 422,
-								}} >
-								{"A fire-forged company of knights and battle mages who charge headfirst into danger."}
-							</span>
-						</div>
-					</div>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							marginRight: 20,
-						}}>
-						<img
-							src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/dqz5uhoh_expires_30_days.png"} 
-							style={{
-								width: 441,
-								height: 469,
-								marginBottom: 15,
-								objectFit: "fill",
-							}}
-						/>
-						<div 
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "flex-start",
-							}}>
-							<span 
-								style={{
-									fontFamily: "'Cloister Black', serif",
-									color: "#1A120B",
-									fontSize: 32,
-									marginBottom: 15,
-								}} >
-								{"The Arcane Seekers"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-									width: 404,
-								}} >
-								{"A fellowship of scholars, mages, and relic hunters devoted to uncovering lost knowledge."}
-							</span>
-						</div>
-					</div>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "center",
-						}}>
-						<img
-							src={"https://preview.redd.it/ngudqlxrsbs81.png?auto=webp&s=8b7135bed601fe43cce9abc2f36f548891fc21e3"} 
-							style={{
-								width: 441,
-								height: 469,
-								marginBottom: 15,
-								objectFit: "fill",
-							}}
-						/>
-						<div 
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "left",
-							}}>
-							<span 
-								style={{
-									fontFamily: "'Cloister Black', serif",
-									color: "#1A120B",
-									fontSize: 32,
-									marginBottom: 15,
-									marginRight: 150,
-								}} >
-								{"The Silver Serpents"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-									width: 404,
-								}} >
-								{"A swift and elusive guild of assassins, spellcasters, and scouts who favor precision over brute force."}
-							</span>
-							
-						</div>
-						
-					</div>
-					
-				</div>
-				<div 
-					style={{
-						height: 1,
-						alignSelf: "stretch",
-						background: "#1A120B",
-						marginBottom: 39,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-				</div>
-				<div 
-					style={{
-						display: "flex",
-						alignItems: "center",
-						marginBottom: 34,
-						marginLeft: 60,
-					}}>
-					<span 
-						style={{
-							fontFamily: "'Cloister Black', serif",
-							color: "#1A120B",
-							fontSize: 100,
-							marginRight: 402,
-						}} >
-						{"Quests"}
-					</span>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 20,
-							width: 667,
-							marginLeft: 402,
-						}} >
-						{"Brave souls may take on quests ranging from simple errands to perilous adventures, each offering coin, glory, or rare treasures. Whether slaying beasts, retrieving lost relics, or aiding townsfolk, every quest shapes the legend of those who dare to accept it!"}
-					</span>
-				</div>
-				<div 
-  style={{
-    alignSelf: "stretch",
-    display: "flex",
-    alignItems: "flex-start",
-    marginBottom: 70,
-    marginLeft: 40,
-    marginRight: 40,
-  }}>
-  <div 
-    style={{
-      flexShrink: 0,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      marginTop: 106,
-      marginRight: 78,
-      width: 440, // Added fixed width
-    }}>
-    <div 
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        marginBottom: 25,
-      }}>
-      <span 
-        style={{
-			fontFamily: "'Cloister Black', serif",
-          	color: "#1A120B",
-          	fontSize: 32,
-          	marginBottom: 5,
-        }}>
-        {questData[activeIndex].title}
-      </span>
-      <span 
-        style={{
-          color: "#1A120B",
-          fontSize: 12,
-        }}>
-        {questData[activeIndex].description}
-      </span>
-    </div>
-    <span 
-      style={{
-        color: "#1A120B",
-        fontSize: 16,
-        marginBottom: 25,
-        width: 414,
-      }}>
-      {questData[activeIndex].description1}
-    </span>
-    <div 
-      style={{
-        width: 440,
-        height: 1,
-        background: "#1A120B",
-        marginBottom: 19,
-      }}>
-    </div>
-    <button 
-  style={{
-    background: "none",
-    border: "none",
-    padding: 0,
-    margin: 0,
-    cursor: "pointer",
-    textAlign: "left",
-    width: "100%",
-    marginBottom: 21,
-  }}
-  onClick={() => navigate("/quests")}>
-  <span 
-    style={{
-      fontFamily: "'Neue Montreal', sans-serif",
-      color: "#1A120B",
-      color: "#1A120B",
-      fontSize: 24,
-      fontWeight: "1000",
-      textDecoration: "underline"
-    }}>
-    {"Join Quest Party"}
-  </span>
-</button>
+                {/* Welcome Text Section */}
+                <div style={{maxWidth: '1200px', padding: '0 20px', textAlign: 'center', marginBottom: 50}}>
+                    <span 
+                        style={{
+                            color: "#1A120B",
+                            fontSize: 32, 
+                            lineHeight: 1.6,
+                        }} >
+                        {"Welcome to the Adventurer's Guild, home to bold explorers and treasure hunters! Here you can form parties, take on exciting quests, and store your hard-earned rewards in our secure vaults. We welcome all adventurers, from solo travelers to experienced groups, to embark on epic journeys and build their legacies!"}
+                    </span>
+                </div>
+                
+                <div style={{ height: 1, width: 'calc(100% - 80px)', maxWidth: '1200px', background: "#1A120B", marginBottom: 50, alignSelf: 'center' }} />
 
-<button 
-  style={{
-    background: "none",
-    border: "none",
-    padding: 0,
-    margin: 0,
-    cursor: "pointer",
-    textAlign: "left",
-    width: "100%",
-  }}
-  onClick={() => navigate("/quests")}>
-  <span 
-    style={{
-      fontFamily: "'Neue Montreal', sans-serif",
-      color: "#1A120B",
-      fontSize: 24,
-      fontWeight: "1000",
-      textDecoration: "underline"
-    }}>
-    {"Solo Quest"}
-  </span>
-</button>
-  </div>
+                {/* Dynamic Party Section Rendered Here */}
+                <div style={{ width: '100%', maxWidth: '1600px', padding: '0 20px', boxSizing: 'border-box', marginBottom: 50 }}>
+                    <PartySection />
+                </div>
+                
+                <div style={{ height: 1, width: 'calc(100% - 80px)', maxWidth: '1200px', background: "#1A120B", marginBottom: 50, alignSelf: 'center' }} />
 
-  {/* Carousel Section */}
-  <div style={{ flex: 1, height: 600, marginLeft: 20 }}>
-        <Carousel 
-          fade 
-          activeIndex={activeIndex} 
-          onSelect={handleSelect} 
-          interval={4000}
-          style={{ height: "100%", 
-			width: "1270px",
-		  }}
-        >
-          {questData.map((quest, idx) => (
-            <Carousel.Item key={idx} style={{ height: "600px" }}>
-              <ExampleCarouselImage 
-                src={quest.image} 
-                text={quest.title}
-                style={{ 
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: 10 
-                }}
-              />
-            </Carousel.Item>
-          ))}
-        </Carousel>
-						<button 
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "flex-start",
-								background: "#3C2A21",
-								borderRadius: 50,
-								border: "none",
-								paddingTop: 21,
-								paddingBottom: 21,
-								paddingLeft: 155,
-								paddingRight: 155,
-								textAlign: "left",
-								marginLeft: -530,
-								marginTop: -70,
-						
-							}}
-							onClick={()=>navigate("/quests")}>
-							<span 
-								style={{
-									color: "#F6F6F6",
-									fontSize: 16,
-								}} >
-								{"DISCOVER MORE"}
-							</span>
-						</button>
-					</div>
-					<div>
-							<div 
-								style={{
-									width: 40,
-									height: 12,
-									background: "#F6F6F6",
-									borderRadius: 10,
-									marginRight: 20,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 40,
-									height: 12,
-									background: "#F6F6F6",
-									borderRadius: 10,
-									marginRight: 20,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 40,
-									height: 12,
-									background: "#F6F6F6",
-									borderRadius: 10,
-								}}>
-							</div>
-						</div>
-					</div>
-			
-				<div 
-					style={{
-						height: 1,
-						alignSelf: "stretch",
-						background: "#1A120B",
-						marginBottom: 59,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-				</div>
-				<div 
-					style={{
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 60,
-						marginLeft: 60,
-					}}>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							marginRight: 20,
-						}}>
-						<span 
-							style={{
-								fontFamily: "'Cloister Black', serif",
-								color: "#1A120B",
-								fontSize: 100,
-								marginBottom: 228,
-							}} >
-							{"Vault"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								marginBottom: 40,
-								width: 415,
-							}} >
-							{"The guild’s Vault System offers a secure haven for adventurers to store their hard-earned treasures, rare artifacts, and excess coin. Only the rightful owner—or those bearing a guild-sanctioned sigil—may access its well-guarded depths."}
-						</span>
-						<button 
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "flex-start",
-								background: "#3C2A21",
-								borderRadius: 50,
-								border: "none",
-								paddingTop: 21,
-								paddingBottom: 21,
-								paddingLeft: 145,
-								paddingRight: 145,
-								textAlign: "left",
-							}}
-							onClick={()=>navigate("/vault")}>
-							<span 
-								style={{
-									color: "#F6F6F6",
-									fontSize: 16,
-								}} >
-								{"STORE YOUR TREASURES"}
-							</span>
-						</button>
-					</div>
-					<img
-						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/5e84wp0w_expires_30_days.png"} 
-						style={{
-							width: 1270,
-							height: 850,
-							marginTop: 15,
-							objectFit: "fill",
-							marginLeft: 30,
-						}}
-					/>
-				</div>
-				<div 
-					style={{
-						height: 1,
-						alignSelf: "stretch",
-						background: "#1A120B",
-						marginBottom: 108,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 86,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 32,
-							fontWeight: "bold",
-							marginRight: 178,
-						}} >
-						{"ADVENTURER’S GUILD"}
-					</span>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							marginRight: 252,
-						}}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"HOME"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"PARTY"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"QUESTS"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"VAULT"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-							}} >
-							{"CONTACT"}
-						</span>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								alignItems: "center",
-								marginBottom: 22,
-							}}>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									marginRight: 48,
-								}} >
-								{"SIGN UP"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									marginRight: 47,
-								}} >
-								{"TO OUR"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									flex: 1,
-								}} >
-								{"NEWSLETTER"}
-							</span>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								alignItems: "center",
-								background: "#E5E5CB",
-								borderRadius: 50,
-								paddingTop: 10,
-								paddingBottom: 10,
-								paddingLeft: 40,
-								paddingRight: 10,
-							}}>
-							<input
-								placeholder={"YOUR EMAIL"}
-								value={input1}
-								onChange={(event)=>onChangeInput1(event.target.value)}
-								style={{
-									color: "#1A120B",
-									fontSize: 20,
-									flex: 1,
-									alignSelf: "stretch",
-									background: "none",
-									border: "none",
-									paddingTop: 23,
-									paddingBottom: 23,
-								}}
-							/>
-							<img
-								src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/c9thllh0_expires_30_days.png"} 
-								style={{
-									width: 60,
-									height: 60,
-									objectFit: "fill",
-								}}
-							/>
-						</div>
-					</div>
-				</div>
-				<img
-					src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/xhxsa3jd_expires_30_days.png"} 
-					style={{
-						height: 308,
-						marginBottom: 130,
-						marginLeft: 40,
-						marginRight: 40,
-						alignSelf: "stretch",
-						objectFit: "fill",
-					}}
-				/>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 30,
-						marginLeft: 40,
-						marginRight: 40,
-						
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 12,
-							fontWeight: "bold",
-							marginRight: 374,
-							width: 144,
-						}} >
-						{"© ADVENTURER’S GUILD/\nALL RIGHTS RESERVED"}
-					</span>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 12,
-							fontWeight: "bold",
-							flex: 1,
-						}} >
-						{"TERMS AND CONDITIONS"}
-					</span>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							alignItems: "center",
-							paddingRight: 3,
-						}}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 12,
-								fontWeight: "bold",
-								marginRight: 89,
-							}} >
-							{"FACEBOOK"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 12,
-								fontWeight: "bold",
-							}} >
-							{"INSTAGRAM"}
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+                {/* Quest Carousel Section */}
+                <div style={{display: "flex", alignItems: "center", justifyContent: 'center', flexWrap: 'wrap', marginBottom: 50, padding: '0 20px', boxSizing: 'border-box', width: '100%', maxWidth: '1800px', gap: '40px'}}>
+                    <div style={{ flexBasis: '450px', flexGrow: 1, minWidth: '300px', marginRight: '20px' }}> {/* Text content for quests */}
+                        <h2 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 72, textAlign: 'left' }}>Quests</h2>
+                        <p style={{ color: "#1A120B", fontSize: 18, lineHeight: 1.6, marginBottom: 20, textAlign: 'left' }}>
+                            {"Brave souls may take on quests ranging from simple errands to perilous adventures, each offering coin, glory, or rare treasures. Whether slaying beasts, retrieving lost relics, or aiding townsfolk, every quest shapes the legend of those who dare to accept it!"}
+                        </p>
+                        <div style={{borderTop: '1px solid #1A120B', paddingTop: 20, marginBottom: 20}}>
+                             <h3 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 28, marginBottom: 5 }}>
+                                {questData[activeIndex].title}
+                             </h3>
+                             <p style={{ color: "#1A120B", fontSize: 12, marginBottom: 15 }}>
+                                {questData[activeIndex].description}
+                             </p>
+                             <p style={{ color: "#1A120B", fontSize: 16, marginBottom: 25, lineHeight: 1.5 }}>
+                                {questData[activeIndex].description1}
+                             </p>
+                        </div>
+                        <div style={{display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'flex-start'}}>
+                            <button onClick={() => navigate("/quests")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+                                <span style={{ fontFamily: "'Neue Montreal', sans-serif", color: "#1A120B", fontSize: 20, fontWeight: "bold", textDecoration: "underline" }}>
+                                    {"Join Quest Party"}
+                                </span>
+                            </button>
+                            <button onClick={() => navigate("/quests")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+                                <span style={{ fontFamily: "'Neue Montreal', sans-serif", color: "#1A120B", fontSize: 20, fontWeight: "bold", textDecoration: "underline" }}>
+                                    {"Solo Quest"}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div style={{ flexBasis: '60%', flexGrow: 2, maxWidth: '1270px', minWidth: '300px' }}> {/* Carousel takes remaining space */}
+                        <Carousel 
+                            fade 
+                            activeIndex={activeIndex} 
+                            onSelect={handleSelect} 
+                            interval={4000}
+                            style={{ maxHeight: '600px' }}
+                            >
+                            {questData.map((quest, idx) => (
+                                <Carousel.Item key={idx} style={{ height: "600px" }}>
+                                    <ExampleCarouselImage 
+                                        src={quest.image} 
+                                        alt={quest.title} 
+                                        style={{ height: "100%", width: "100%", objectFit: "cover", borderRadius: 10 }}
+                                    />
+                                     <Carousel.Caption style={{backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "0 0 10px 10px", padding: "15px"}}>
+                                        <h3 style={{fontSize: "1.75rem"}}>{quest.title}</h3>
+                                     </Carousel.Caption>
+                                </Carousel.Item>
+                            ))}
+                        </Carousel>
+                    </div>
+                </div>
+                
+                 <div style={{width: '100%', maxWidth: '1200px', textAlign: 'center', marginTop: 20, marginBottom: 70}}>
+                     <button 
+                        style={{
+                            background: "#3C2A21", color: "#F6F6F6", fontSize: 18, fontWeight: 'bold',
+                            borderRadius: 50, border: "none", padding: "18px 100px", 
+                            cursor: "pointer",
+                        }}
+                        onClick={()=>navigate("/quests")}>
+                        {"DISCOVER MORE QUESTS"}
+                    </button>
+                </div>
+
+                {/* Footer Section */}
+                <div style={{ width: "100%", padding: "20px 40px", boxSizing: "border-box", marginTop: "auto", background:"#FFFFFF", borderTop: "1px solid #E0E0E0" }}>
+                    {/* ... (Your full footer JSX, input1 is for newsletter) ... */}
+                     <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "flex-start", flexWrap: "wrap", gap: "40px", justifyContent: "space-around", padding: "30px 0" }}>
+                        <span style={{ color: "#1A120B", fontSize: 32, fontWeight: "bold", flexBasis: '100%', textAlign: 'center', marginBottom: 20 }} >ADVENTURER’S GUILD</span>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                            {["HOME", "PARTY", "QUESTS", "VAULT", "CONTACT"].map(item => (
+                                <Link key={item} to={`/${item.toLowerCase()}`} style={{textDecoration: 'none', color: '#1A120B', fontSize: 18, marginBottom: 8, fontWeight: 500}}>{item}</Link>
+                            ))}
+                        </div>
+                        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: "280px", maxWidth: '400px' }}>
+                            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", marginBottom: 15 }}>
+                                <span style={{ color: "#1A120B", fontSize: 24, fontWeight: "bold", marginRight: 10 }} > SIGN UP </span>
+                                <span style={{ color: "#1A120B", fontSize: 24, fontWeight: "bold", marginRight: 10 }} > TO OUR </span>
+                                <span style={{ color: "#1A120B", fontSize: 24, fontWeight: "bold" }} > NEWSLETTER </span>
+                            </div>
+                            <div style={{ display: "flex", alignItems: "center", background: "#E5E5CB", borderRadius: 50, paddingRight: 10 }}>
+                                <input placeholder={"YOUR EMAIL"} type="email" value={input1} onChange={(event)=>onChangeInput1(event.target.value)} style={{ color: "#1A120B", fontSize: 16, flex: 1, background: "none", border: "none", padding: "15px 0px 15px 25px", boxSizing: "border-box", outline: "none"}} />
+                                <img alt="Submit Newsletter" src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/axua6xtv_expires_30_days.png"} style={{ width: 40, height: 40, objectFit: "fill", cursor: "pointer" }} onClick={() => alert("Newsletter signup for: " + input1)} />
+                            </div>
+                        </div>
+                    </div>
+                    <img alt="Footer banner" src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/xhxsa3jd_expires_30_days.png"} style={{ height: "auto", maxHeight: 200, margin: "30px auto", display:'block', width: "100%", maxWidth:"1200px", objectFit: "cover" }}/>
+                    <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "20px", paddingBottom: "20px", justifyContent: "space-between", fontSize: 12, color: "#1A120B" }}>
+                        <span>© ADVENTURER’S GUILD/ALL RIGHTS RESERVED</span>
+                        <span>TERMS AND CONDITIONS</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                            <span>FACEBOOK</span>
+                            <span>INSTAGRAM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }

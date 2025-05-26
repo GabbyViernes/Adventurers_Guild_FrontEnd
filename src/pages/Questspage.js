@@ -31,7 +31,7 @@ export default function QuestsPage(props) {
 						marginBottom: 13,
 					}}>
 					 <Link 
-    to="/party"
+    to="/joinparty"
     style={{
       textDecoration: 'none',
       marginRight: 32,

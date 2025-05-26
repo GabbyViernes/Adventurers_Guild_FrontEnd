@@ -1,4 +1,5 @@
 // ProfilePage.js - MODIFIED
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
@@ -10,51 +11,53 @@ export default function ProfilePage(props) {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const fetchUserProfile = async (userId) => { // Accept userId as parameter
-        setLoading(true);
-        setError('');
-        try {
-            const response = await axios.get(`http://localhost:3001/api/profile/${userId}`);
-            console.log("Profile data from API:", response.data);
-            setUserData(response.data);
-        } catch (err) {
-            console.error('Failed to fetch user profile:', err);
-            if (err.response && (err.response.status === 401 || err.response.status === 404)) {
-                setError('Session invalid or user not found. Please login again.');
-                localStorage.removeItem('loggedInUser'); // Clear invalid session
-            } else {
-                setError('Failed to load profile. Please try again later.');
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
+    const defaultProfilePic = "https://media.istockphoto.com/id/1399318216/vector/round-icon-spartan-helmet.jpg?s=612x612&w=0&k=20&c=PWKk1b8Xm7THDlgYS_9qyi3ShUxL3VGtaEVJK0wgGF0=";
 
     useEffect(() => {
-        const storedUserString = localStorage.getItem('loggedInUser');
-        let userIdToFetch = null;
-
-        if (storedUserString) {
+        const fetchUserProfile = async () => {
+            setLoading(true);
+            setError('');
             try {
-                const parsedUser = JSON.parse(storedUserString);
-                // Expecting member_id from login response now
-                userIdToFetch = parsedUser.member_id || parsedUser.id || parsedUser.userId; 
-            } catch (e) {
-                console.error("Failed to parse stored user data:", e);
-                setError('Invalid user session data. Please login again.');
-                localStorage.removeItem('loggedInUser');
-                setLoading(false);
-                return; 
-            }
-        }
+                const storedUserString = localStorage.getItem('loggedInUser');
+                let userIdToFetch = null;
 
-        if (!userIdToFetch) {
-            setError('No user logged in. Please login.');
-            setLoading(false);
-        } else {
-            fetchUserProfile(userIdToFetch); // Pass userId to fetch function
-        }
-    }, []); 
+                if (storedUserString) {
+                    try {
+                        const parsedUser = JSON.parse(storedUserString);
+                        userIdToFetch = parsedUser.member_id || parsedUser.id || parsedUser.userId;
+                    } catch (e) {
+                        console.error("Failed to parse stored user data:", e);
+                        setError('Invalid user session data. Please login again.');
+                        localStorage.removeItem('loggedInUser');
+                        setLoading(false);
+                        return;
+                    }
+                }
+
+                if (!userIdToFetch) {
+                    setError('No user logged in. Please login.');
+                    setLoading(false);
+                    return;
+                }
+
+                const response = await axios.get(`http://localhost:3001/api/profile/${userIdToFetch}`);
+                console.log("Profile data from API:", response.data); 
+                setUserData(response.data);
+            } catch (err) {
+                console.error('Failed to fetch user profile:', err);
+                if (err.response && (err.response.status === 401 || err.response.status === 404)) {
+                    setError('Session invalid or user not found. Please login again.');
+                    localStorage.removeItem('loggedInUser');
+                } else {
+                    setError('Failed to load profile. Please try again later.');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('loggedInUser');
@@ -62,32 +65,25 @@ export default function ProfilePage(props) {
     };
 
     const handleChangeProfilePicture = async () => {
-        if (!userData || !userData.member_id) { // Check against member_id
+        if (!userData || !userData.member_id) {
             alert("User data not loaded properly. Cannot change picture.");
             return;
         }
+        const newProfilePicUrlPrompt = window.prompt("Please enter the new image URL (leave blank to use default/remove):");
+        if (newProfilePicUrlPrompt === null) return;
 
-        const newProfilePicUrl = window.prompt("Please enter the new image URL for your profile picture:");
-
-        if (newProfilePicUrl === null) return; // User pressed cancel
-
-        const trimmedUrl = newProfilePicUrl.trim();
-        // Basic URL validation (optional, can be more robust)
-        if (trimmedUrl === "" || !trimmedUrl.startsWith('http')) { 
-            alert("Please enter a valid image URL (starting with http/https) or leave blank to remove.");
-        }
-
+        const trimmedUrl = newProfilePicUrlPrompt.trim();
+        const urlToSend = trimmedUrl === "" ? null : trimmedUrl;
 
         try {
             const response = await axios.put(`http://localhost:3001/api/profile/${userData.member_id}/picture`, {
-                profilePictureUrl: trimmedUrl 
+                profilePictureUrl: urlToSend
             });
-
             if (response.data && response.data.success) {
                 alert("Profile picture updated successfully!");
                 setUserData(prevData => ({
                     ...prevData,
-                    profile_picture_url: response.data.profilePictureUrl // Use URL from backend response
+                    profile_picture_url: response.data.profilePictureUrl 
                 }));
             } else {
                 alert(response.data.message || "Failed to update profile picture.");
@@ -101,7 +97,6 @@ export default function ProfilePage(props) {
     if (loading) {
         return <div style={{ padding: '50px', textAlign: 'center', fontSize: '20px' }}>Loading profile...</div>;
     }
-
     if (error) {
         return (
             <div style={{ padding: '50px', textAlign: 'center', fontSize: '20px', color: 'red' }}>
@@ -110,27 +105,28 @@ export default function ProfilePage(props) {
             </div>
         );
     }
-
     if (!userData) {
         return <div style={{ padding: '50px', textAlign: 'center', fontSize: '20px' }}>No user data available. Please try logging in again.</div>;
     }
 
-  // Destructure userData
+    // Destructure userData
     const { 
         name = "N/A", 
         email = "N/A", 
-        class: userClass = "N/A", 
-        // MODIFIED line with your new default image URL:
-        profile_picture_url = "https://media.istockphoto.com/id/1399318216/vector/round-icon-spartan-helmet.jpg?s=612x612&w=0&k=20&c=PWKk1b8Xm7THDlgYS_9qyi3ShUxL3VGtaEVJK0wgGF0=", 
+        class: userClass = "N/A", // Expect 'class' from backend, use it as 'userClass'
+        profile_picture_url, 
+        parties = [], // Expect 'parties' array from backend, default to empty array
         main_skills = "Illusion, Lockpicking, Stealth", 
         primary_skills = "Short Blade, Mysticism, Critical Striking", 
         misc_skills = "Restoration, Streetwise, Mercantile, Etiquette, Dodging, Destruction",
     } = userData;
 
+    const displayProfilePic = (profile_picture_url && profile_picture_url.trim() !== "") ? profile_picture_url : defaultProfilePic;
+
     return (
         <div style={{ display: "flex", flexDirection: "column", background: "#FFFFFF" }}>
             <div style={{ minHeight: "100vh", alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "flex-start", background: "#F6F6F6" }}>
-                {/* Header Navigation */}
+                {/* Header Navigation (Same as your provided code) */}
                 <div style={{ alignSelf: "stretch", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 40px", boxSizing: "border-box", flexWrap: "wrap", background: "#FFFFFF", borderBottom: "1px solid #E0E0E0" }}>
                     <div style={{display: "flex", alignItems: "center", gap: "25px", flexWrap: "wrap"}}>
                         {["Join Party", "Quests", "Vault", "Inventory", "NEWS"].map(item => (
@@ -154,14 +150,8 @@ export default function ProfilePage(props) {
                     </span>
                     <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignItems: "flex-start", marginBottom: 50, gap: "40px" }}>
                         <div style={{textAlign: 'center'}}>
-                            <img
-                                alt="Profile" 
-                                src={profile_picture_url} 
-                                style={{ width: 250, height: 250, objectFit: "cover", borderRadius: "50%", marginBottom: 15, border: "3px solid #3C2A21" }}
-                            />
-                            <button 
-                                style={{ background: "#584539", color: "white", borderRadius: 20, border: "none", padding: "10px 20px", cursor: 'pointer', fontSize: 14 }}
-                                onClick={handleChangeProfilePicture}>
+                            <img alt="Profile" src={displayProfilePic} style={{ width: 250, height: 250, objectFit: "cover", borderRadius: "50%", marginBottom: 15, border: "3px solid #3C2A21" }} />
+                            <button style={{ background: "#584539", color: "white", borderRadius: 20, border: "none", padding: "10px 20px", cursor: 'pointer', fontSize: 14 }} onClick={handleChangeProfilePicture}>
                                 Change Profile
                             </button>
                         </div>
@@ -177,6 +167,23 @@ export default function ProfilePage(props) {
                                 </div>
                             ))}
 
+                            {/* Display Parties */}
+                            <h2 style={{ color: "#1A120B", fontSize: 28, fontWeight: "bold", marginBottom: 15, marginTop: 30, borderBottom: '2px solid #3C2A21', paddingBottom: 10 }} >
+                                Your Parties
+                            </h2>
+                            {parties.length > 0 ? (
+                                <ul style={{ listStyleType: 'none', paddingLeft: 0, width: '100%' }}>
+                                    {parties.map(party => (
+                                        <li key={party.party_id} style={{ marginBottom: 10, padding: '8px 0', borderBottom: '1px solid #E0E0E0', fontSize: 16 }}>
+                                            <span style={{fontWeight: 'bold', color: '#3C2A21'}}>{party.party_name}</span> - Role: {party.role}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p style={{fontSize: 16, color: '#555'}}>You are not currently a member of any party.</p>
+                            )}
+
+                            {/* Skills */}
                             <h2 style={{ color: "#1A120B", fontSize: 28, fontWeight: "bold", marginBottom: 25, marginTop: 30, borderBottom: '2px solid #3C2A21', paddingBottom: 10 }} >
                                 Skills <span style={{fontSize: 16, fontWeight: 'normal'}}>(Placeholders)</span>
                             </h2>
@@ -187,22 +194,14 @@ export default function ProfilePage(props) {
                                 </div>
                             ))}
 
-                            <h2 style={{ color: "#1A120B", fontSize: 28, fontWeight: "bold", marginBottom: 20, marginTop: 30, borderBottom: '2px solid #3C2A21', paddingBottom: 10 }} >
-                                Inventory <span style={{fontSize: 16, fontWeight: 'normal'}}>(Placeholder)</span>
-                            </h2>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: "15px", marginBottom: 20 }}>
-                                {[...Array(6)].map((_, i) => (
-                                    <div key={i} title={`Inventory Slot ${i+1}`} style={{ width: 100, height: 100, background: "#D9D9D9", borderRadius: "8px", border: '1px solid #BFBFBF', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#777' }}>
-                                        Slot {i+1}
-                                    </div>
-                                ))}
-                            </div>
+                            {/* Inventory Placeholder ... */}
                         </div>
                     </div>
                 </div> 
                 
-                {/* Footer Section */}
+                {/* Footer Section ... */}
                 <div style={{ width: "100%", padding: "20px 40px", boxSizing: "border-box", marginTop: "auto", background: "#3C2A21", color: "#F6F6F6" }}>
+                    {/* ... (Full footer JSX - same as before, ensure newsletterEmailInput is used correctly) ... */}
                     <div style={{display: "flex", alignItems: "center", flexWrap: "wrap", gap: "40px", marginBottom: 20, justifyContent: "space-around"}}>
                         <span style={{ fontSize: 24, fontWeight: "bold" }}>ADVENTURER’S GUILD</span>
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -217,12 +216,7 @@ export default function ProfilePage(props) {
                                 <span style={{ fontSize: 20, fontWeight: "bold" }} > NEWSLETTER </span>
                             </div>
                             <div style={{ display: "flex", alignItems: "center", background: "#E5E5CB", borderRadius: 50, paddingRight: 10 }}>
-                                <input
-                                    placeholder={"YOUR EMAIL"} type="email"
-                                    value={newsletterEmailInput} 
-                                    onChange={(event)=>onChangeNewsletterEmailInput(event.target.value)}
-                                    style={{ color: "#1A120B", fontSize: 16, flex: 1, background: "none", border: "none", padding: "15px 0px 15px 25px", boxSizing: "border-box", outline: "none"}}
-                                />
+                                <input placeholder={"YOUR EMAIL"} type="email" value={newsletterEmailInput} onChange={(event)=>onChangeNewsletterEmailInput(event.target.value)} style={{ color: "#1A120B", fontSize: 16, flex: 1, background: "none", border: "none", padding: "15px 0px 15px 25px", boxSizing: "border-box", outline: "none"}} />
                                 <img alt="Submit Newsletter" src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/a6kx2wzj_expires_30_days.png"} style={{ width: 40, height: 40, objectFit: "fill", cursor: "pointer" }} onClick={() => alert("Newsletter signup for: " + newsletterEmailInput)} />
                             </div>
                         </div>

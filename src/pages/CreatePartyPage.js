@@ -1,717 +1,205 @@
-import React, {useState} from "react";
-import { useNavigate } from "react-router-dom";
-export default function CreatePartyPage(props)  {
-	const [input1, onChangeInput1] = useState('');
-	const [input2, onChangeInput2] = useState('');
-	const [input3, onChangeInput3] = useState('');
-	const [input4, onChangeInput4] = useState('');
-	const [input5, onChangeInput5] = useState('');
+// CreatePartyPage.js - FULL MODIFIED CODE
+
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from 'axios';
+
+export default function CreatePartyPage(props) {
+    const [partyName, setPartyName] = useState('');
+    const [partyDescription, setPartyDescription] = useState('');
+    const [loggedInUser, setLoggedInUser] = useState(null); // Will store the full user object
+    const [allOtherUsers, setAllOtherUsers] = useState([]);
+    const [selectedMemberId, setSelectedMemberId] = useState('');
+    
+    const [isLoading, setIsLoading] = useState(true); // Single loading state for initial setup
+    const [error, setError] = useState('');
+    
     const navigate = useNavigate();
-	return (
-		<div 
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				background: "#FFFFFF",
-			}}>
-			<div 
-				style={{
-					height: 2111,
-					alignSelf: "stretch",
-					display: "flex",
-					flexDirection: "column",
-					background: "#F6F6F6",
-				}}>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						paddingLeft: 40,
-						paddingRight: 40,
-						marginBottom: 13,
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginTop: 58,
-							marginRight: 32,
-						}} >
-						{"Join Party"}
-					</span>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginTop: 58,
-							marginRight: 40,
-						}} >
-						{"Quests"}
-					</span>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginTop: 58,
-							marginRight: 40,
-						}} >
-						{"Vault"}
-					</span>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginTop: 58,
-							marginRight: 249,
-						}} >
-						{"Inventory"}
-					</span>
-					<img
-						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/teullewi_expires_30_days.png"} 
-						style={{
-							width: 87,
-							height: 87,
-							marginTop: 20,
-							objectFit: "fill",
-                            marginLeft: 300,
-						}}
-					/>
-					<div 
-						style={{
-							flex: 1,
-							alignSelf: "stretch",
-						}}>
-					</div>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginTop: 58,
-							marginRight: 64,
-						}} >
-						{"NEWS"}
-					</span>
-					<button 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							background: "#3C2A21",
-							borderRadius: 50,
-							border: "none",
-							paddingTop: 18,
-							paddingBottom: 18,
-							paddingLeft: 35,
-							paddingRight: 35,
-							marginTop: 40,
-							textAlign: "left",
-						}}
-						onClick={()=>navigate("/profile")}>
-						<span 
-							style={{
-								color: "#F6F6F6",
-								fontSize: 16,
-							}} >
-							{"Profile"}
-						</span>
-					</button>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 50,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<div 
-						style={{
-							flex: 1,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							marginRight: 12,
-						}}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 80,
-								marginBottom: 60,
-							}} >
-							{"Create Party"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 15,
-								marginLeft: 38,
-							}} >
-							{"Party Info"}
-						</span>
-						<input
-							placeholder={"Party Name"}
-							value={input1}
-							onChange={(event)=>onChangeInput1(event.target.value)}
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								marginBottom: 20,
-								marginLeft: 38,
-								alignSelf: "stretch",
-								background: "none",
-								borderRadius: 4,
-								border: `1px solid #1A120B`,
-								paddingTop: 13,
-								paddingBottom: 13,
-								paddingLeft: 13,
-								paddingRight: 26,
-                                marginRight: 70,
-                                width: 800,
-							}}
-						/>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 20,
-								marginLeft: 38,
-							}}>
-							<input
-								placeholder={"Party Leader Name"}
-								value={input2}
-								onChange={(event)=>onChangeInput2(event.target.value)}
-								style={{
-									color: "#1A120B",
-									fontSize: 20,
-									marginRight: 10,
-									flexShrink: 0,
-									background: "none",
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									padding: 13,
-                                    width: 390,
-								}}
-							/>
-							<input
-								placeholder={"Class"}
-								value={input3}
-								onChange={(event)=>onChangeInput3(event.target.value)}
-								style={{
-									color: "#1A120B",
-									fontSize: 20,
-									flexShrink: 0,
-									background: "none",
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									paddingTop: 13,
-									paddingBottom: 13,
-									paddingLeft: 14,
-									paddingRight: 14,
-                                    width: 400,
-								}}
-							/>
-						</div>
-						<input
-							placeholder={"Rank: (Default) E-Rank"}
-							value={input4}
-							onChange={(event)=>onChangeInput4(event.target.value)}
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								marginBottom: 52,
-								marginLeft: 38,
-								alignSelf: "stretch",
-								background: "none",
-								borderRadius: 4,
-								border: `1px solid #1A120B`,
-								paddingTop: 13,
-								paddingBottom: 13,
-								paddingLeft: 13,
-								paddingRight: 26,
-                                width: 800,
-							}}
-						/>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 10,
-								marginLeft: 38,
-							}} >
-							{"Party Members"}
-						</span>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 10,
-								marginLeft: 38,
-							}}>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-									marginRight: 350,
-								}} >
-								{"Frontline"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Supports"}
-							</span>
-						</div>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 10,
-								marginLeft: 38,
-							}}>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									marginRight: 26,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-								}}>
-							</div>
-						</div>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 10,
-								marginLeft: 38,
-							}}>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									marginRight: 26,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-								}}>
-							</div>
-						</div>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 20,
-								marginLeft: 38,
-							}}>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									marginRight: 26,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-								}}>
-							</div>
-						</div>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 16,
-								marginBottom: 10,
-								marginLeft: 38,
-							}} >
-							{"Damage Dealers"}
-						</span>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 10,
-								marginLeft: 38,
-							}}>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									marginRight: 26,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-								}}>
-							</div>
-						</div>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 10,
-								marginLeft: 38,
-							}}>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									marginRight: 26,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-								}}>
-							</div>
-						</div>
-						<div 
-							style={{
-								display: "flex",
-								alignItems: "flex-start",
-								marginBottom: 52,
-								marginLeft: 38,
-							}}>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-									marginRight: 26,
-								}}>
-							</div>
-							<div 
-								style={{
-									width: 384,
-									height: 50,
-									borderRadius: 4,
-									border: `1px solid #1A120B`,
-								}}>
-							</div>
-						</div>
-						<button 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								background: "#3C2A21E3",
-								borderRadius: 50,
-								border: "none",
-								paddingTop: 18,
-								paddingBottom: 18,
-								marginBottom: 24,
-								marginLeft: 38,
-								textAlign: "left",
-                                width: 800,
-							}}
-							onClick={()=>navigate("/MainSI")}>
-							<span 
-								style={{
-									color: "#F6F6F6",
-									fontSize: 16,
-								}} >
-								{"Create Party"}
-							</span>
-						</button>
-						<button 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								background: "#B6B6B6",
-								borderRadius: 50,
-								border: "none",
-								paddingTop: 18,
-								paddingBottom: 18,
-								marginLeft: 38,
-								textAlign: "left",
-                                width: 800,
-							}}
-							onClick={()=>navigate("/MainSI")}>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Cancel"}
-							</span>
-						</button>
-					</div>
-					<img
-						src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/b1opppst_expires_30_days.png"} 
-						style={{
-							width: 890,
-							height: 1333,
-							marginTop: 60,
-							objectFit: "fill",
-						}}
-					/>
-				</div>
-				<div 
-					style={{
-						height: 1,
-						alignSelf: "stretch",
-						background: "#1A120B",
-						marginBottom: 109,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 86,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 32,
-							fontWeight: "bold",
-							marginRight: 178,
-						}} >
-						{"ADVENTURER’S GUILD"}
-					</span>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							marginRight: 252,
-						}}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"HOME"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"PARTY"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"QUESTS"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"VAULT"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-							}} >
-							{"CONTACT"}
-						</span>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								alignItems: "center",
-								marginBottom: 22,
-							}}>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									marginRight: 48,
-								}} >
-								{"SIGN UP"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									marginRight: 47,
-								}} >
-								{"TO OUR"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									flex: 1,
-								}} >
-								{"NEWSLETTER"}
-							</span>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								alignItems: "center",
-								background: "#E5E5CB",
-								borderRadius: 50,
-								paddingTop: 10,
-								paddingBottom: 10,
-								paddingLeft: 40,
-								paddingRight: 10,
-							}}>
-							<input
-								placeholder={"YOUR EMAIL"}
-								value={input5}
-								onChange={(event)=>onChangeInput5(event.target.value)}
-								style={{
-									color: "#1A120B",
-									fontSize: 20,
-									flex: 1,
-									alignSelf: "stretch",
-									background: "none",
-									border: "none",
-									paddingTop: 23,
-									paddingBottom: 23,
-								}}
-							/>
-							<img
-								src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/v7prinvm_expires_30_days.png"} 
-								style={{
-									width: 60,
-									height: 60,
-									objectFit: "fill",
-								}}
-							/>
-						</div>
-					</div>
-				</div>
-				<img
-					src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/r1krfpne_expires_30_days.png"} 
-					style={{
-						height: 308,
-						marginBottom: 130,
-						marginLeft: 40,
-						marginRight: 40,
-						alignSelf: "stretch",
-						objectFit: "fill",
-					}}
-				/>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 44,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 12,
-							fontWeight: "bold",
-							marginRight: 374,
-							width: 144,
-						}} >
-						{"© ADVENTURER’S GUILD/\nALL RIGHTS RESERVED"}
-					</span>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 12,
-							fontWeight: "bold",
-							flex: 1,
-						}} >
-						{"TERMS AND CONDITIONS"}
-					</span>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							alignItems: "center",
-							paddingRight: 3,
-						}}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 12,
-								fontWeight: "bold",
-								marginRight: 89,
-							}} >
-							{"FACEBOOK"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 12,
-								fontWeight: "bold",
-							}} >
-							{"INSTAGRAM"}
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	)
+
+    const initializePage = useCallback(async () => {
+        setIsLoading(true);
+        setError('');
+        const userString = localStorage.getItem('loggedInUser');
+        
+        if (!userString) {
+            setError("No user logged in. Please login to create a party.");
+            setIsLoading(false);
+            navigate("/login"); // Redirect if no user session
+            return;
+        }
+
+        let currentUserData;
+        try {
+            currentUserData = JSON.parse(userString);
+        } catch (e) {
+            console.error("Error parsing loggedInUser from localStorage", e);
+            setError("Could not load user session. Please login again.");
+            localStorage.removeItem('loggedInUser');
+            setIsLoading(false);
+            navigate("/login"); // Redirect on parsing error
+            return;
+        }
+        
+        const currentUserId = currentUserData?.member_id || currentUserData?.id || currentUserData?.userId;
+
+        if (!currentUserId) {
+            setError("User session is invalid (missing ID). Please login again.");
+            localStorage.removeItem('loggedInUser');
+            setIsLoading(false);
+            navigate("/login"); // Redirect if ID is missing
+            return;
+        }
+        
+        setLoggedInUser(currentUserData);
+
+        // Fetch all other users for the dropdown
+        try {
+            const response = await axios.get(`http://localhost:3001/api/users?excludeUserId=${currentUserId}`);
+            setAllOtherUsers(response.data);
+        } catch (err) {
+            console.error("Failed to fetch users:", err);
+            // Append to existing error or set new one
+            setError(prevError => (prevError ? prevError + " " : "") + "Failed to load list of potential party members.");
+        } finally {
+            setIsLoading(false); // Set loading to false after all initial fetches are attempted
+        }
+    // ESLint might warn about missing dependencies like setLoggedInUser, setAllOtherUsers, setError, setIsLoading.
+    // However, state setter functions from useState are guaranteed to be stable and don't need to be dependencies.
+    // 'navigate' is stable from react-router-dom.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navigate]); // 'navigate' is included as it's used for redirection.
+
+    useEffect(() => {
+        initializePage();
+    }, [initializePage]);
+
+    const handleCreateParty = async (e) => {
+        e.preventDefault();
+        setError(''); 
+
+        if (!partyName.trim()) {
+            setError("Party name cannot be empty.");
+            return;
+        }
+
+        const leaderId = loggedInUser?.member_id || loggedInUser?.id || loggedInUser?.userId;
+        if (!leaderId) {
+            setError("User not properly identified or session expired. Please login again.");
+            return;
+        }
+
+        const partyPayload = {
+            partyName: partyName.trim(),
+            partyDescription: partyDescription.trim(),
+            leader_id: leaderId,
+            additional_member_id: selectedMemberId ? parseInt(selectedMemberId) : null 
+        };
+
+        console.log("Creating party with payload:", partyPayload);
+        setIsLoading(true); // Indicate loading for the create action
+
+        try {
+            const response = await axios.post('http://localhost:3001/api/parties', partyPayload);
+            console.log('Party creation successful:', response.data);
+            alert(`Party "${response.data.party_name}" created successfully!`);
+            navigate('/joinparty'); // Or navigate(`/party/${response.data.party_id}`)
+        } catch (err) {
+            console.error("Party creation error:", err.response ? err.response.data : err.message);
+            const errorMessage = err.response?.data?.message || "Failed to create party. Please try again.";
+            setError(errorMessage);
+            alert(`Party creation failed: ${errorMessage}`);
+        } finally {
+            setIsLoading(false); // Reset loading after create action attempt
+        }
+    };
+
+    if (isLoading && !error) { // Show loading only if there isn't an initial error preventing form display
+        return <div style={{ padding: 20, textAlign: 'center', fontSize: '18px' }}>Loading...</div>;
+    }
+
+    return (
+        <div style={{ display: "flex", flexDirection: "column", background: "#FFFFFF" }}>
+            <div style={{ minHeight: "100vh", alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", background: "#F6F6F6", padding: "0 20px 20px 20px" }}>
+                {/* Header */}
+                <div style={{ width: '100%', maxWidth: '1200px', display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 0", marginBottom: 30, borderBottom: "1px solid #ddd", background: "#FFFFFF", paddingLeft: "20px", paddingRight: "20px", boxSizing: 'border-box' }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "25px", flexWrap: "wrap"}}>
+                        <Link to="/joinparty" style={{marginRight: 20, textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>JOIN PARTY</Link>
+                        <Link to="/quests" style={{marginRight: 20, textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>QUESTS</Link>
+                         <Link to="/vault" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>VAULT</Link>
+                         <Link to="/inventory" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>INVENTORY</Link>
+                         <Link to="/news" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>NEWS</Link>
+                    </div>
+                    <img alt="Guild Logo" src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/teullewi_expires_30_days.png"} style={{ width: 70, height: 70, objectFit: "fill", cursor: 'pointer', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }} onClick={() => navigate("/MainSI")} />
+                    <button onClick={() => navigate("/profile")} style={{background: "#3C2A21", color: "white", border: 'none', padding: '12px 25px', borderRadius: 50, cursor: 'pointer', fontSize: 16, fontWeight: 500}}>Profile</button>
+                </div>
+
+                <div style={{width: '100%', maxWidth: '700px', background: 'white', padding: '30px 40px', borderRadius: 8, boxShadow: '0 2px 10px rgba(0,0,0,0.1)'}}>
+                    <span style={{ color: "#1A120B", fontSize: 48, marginBottom: 30, display: 'block', textAlign: 'center', fontFamily: "'Times New Roman', Times, serif" }} >
+                        {"Create Your Party"}
+                    </span>
+
+                    {/* Display error if it exists and not loading */}
+                    {error && !isLoading && <p style={{color: 'red', textAlign: 'center', marginBottom: '20px'}}>{error} {!loggedInUser && <Link to="/login" style={{color: '#3C2A21'}}>Login here</Link>}</p>}
+                    
+                    {!loggedInUser && !isLoading && !error && ( // Case where user is not logged in and no other error occurred yet
+                        <p style={{color: 'red', textAlign: 'center'}}>
+                            You must be logged in to create a party. <Link to="/login" style={{color: '#3C2A21'}}>Login here</Link>
+                        </p>
+                    )}
+
+                    {loggedInUser && (
+                        <form onSubmit={handleCreateParty}>
+                            <div style={{marginBottom: 20}}>
+                                <label htmlFor="partyName" style={{display: 'block', color: "#1A120B", fontSize: 18, fontWeight: "bold", marginBottom: 8}}>Party Name:</label>
+                                <input id="partyName" placeholder={"Enter your desired Party Name"} value={partyName} onChange={(event) => setPartyName(event.target.value)} required style={{ color: "#1A120B", fontSize: 18, background: "#F9F9F9", borderRadius: 4, border: `1px solid #ccc`, padding: 15, width: "100%", boxSizing: 'border-box' }} />
+                            </div>
+                            <div style={{marginBottom: 20}}>
+                                <label htmlFor="partyDescription" style={{display: 'block', color: "#1A120B", fontSize: 18, fontWeight: "bold", marginBottom: 8}}>Party Description (Optional):</label>
+                                <textarea id="partyDescription" placeholder={"Describe your party's goals, theme, or requirements..."} value={partyDescription} onChange={(event) => setPartyDescription(event.target.value)} rows={4} style={{ color: "#1A120B", fontSize: 16, background: "#F9F9F9", borderRadius: 4, border: `1px solid #ccc`, padding: 15, width: "100%", boxSizing: 'border-box', fontFamily: 'inherit', resize: 'vertical' }} />
+                            </div>
+
+                            <div style={{marginBottom: 20, padding: '15px', background: '#f0f0f0', borderRadius: 4}}>
+                                <h3 style={{color: "#1A120B", fontSize: 16, fontWeight: "bold", marginTop:0, marginBottom: 5}}>Party Leader (You):</h3>
+                                <p style={{margin: '0px 0', fontSize: 15}}>{loggedInUser.name || 'N/A'}</p> 
+                            </div>
+
+                            <div style={{marginBottom: 25}}>
+                                <label htmlFor="addMember" style={{display: 'block', color: "#1A120B", fontSize: 18, fontWeight: "bold", marginBottom: 8}}>
+                                    Add One Member (Optional):
+                                </label>
+                                <select 
+                                    id="addMember" 
+                                    value={selectedMemberId} 
+                                    onChange={(e) => setSelectedMemberId(e.target.value)}
+                                    style={{ color: "#1A120B", fontSize: 16, background: "#F9F9F9", borderRadius: 4, border: `1px solid #ccc`, padding: 15, width: "100%", boxSizing: 'border-box' }}
+                                >
+                                    <option value="">-- Select a member --</option>
+                                    {allOtherUsers.map(user => (
+                                        <option key={user.member_id} value={user.member_id}>
+                                            {user.name} (ID: {user.member_id})
+                                        </option>
+                                    ))}
+                                </select>
+                                {allOtherUsers.length === 0 && !isLoading && <p style={{fontSize: 12, color: '#777', marginTop: 5}}>No other users available to add.</p>}
+                            </div>
+                            
+                            <div style={{display: 'flex', justifyContent: 'space-around', marginTop: 30}}>
+                                <button type="submit" style={{ background: "#3C2A21", color: "#F6F6F6", fontSize: 16, fontWeight: 'bold', borderRadius: 50, border: "none", padding: "15px 50px", cursor: 'pointer' }} disabled={!loggedInUser || isLoading}>
+                                    {"Create Party"}
+                                </button>
+                                <button type="button" style={{ background: "#B6B6B6", color: "#1A120B", fontSize: 16, borderRadius: 50, border: "none", padding: "15px 50px", cursor: 'pointer' }} onClick={()=>navigate(-1)}>
+                                    {"Cancel"}
+                                </button>
+                            </div>
+                        </form>
+                    )}
+                </div>
+                
+                {/* Footer */}
+                <div style={{ width: "100%", padding: "20px", boxSizing: "border-box", marginTop: "auto", textAlign: "center", background: "#e0e0e0", borderTop: "1px solid #ccc" }}>
+                    <p style={{margin:0, fontSize: 12, color: "#555"}}>© ADVENTURER’S GUILD/ALL RIGHTS RESERVED</p>
+                </div>
+            </div>
+        </div>
+    );
 }
