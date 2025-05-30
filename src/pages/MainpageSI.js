@@ -1,104 +1,113 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react"; // Added useEffect
 import Carousel from 'react-bootstrap/Carousel';
-import ExampleCarouselImage from '../components/ExampleCarouselImage'; // Assuming this is for your quest carousel
+import ExampleCarouselImage from '../components/ExampleCarouselImage'; // Assuming this component exists
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import useQuestStore from "../components/QuestCarousel"; // Assuming this is for your quest carousel
+import useQuestStore from "../components/QuestCarousel"; // Assuming this handles carousel state
+import axios from 'axios'; // Import axios for API calls
 
 // Import the dynamic PartySection component
 import PartySection from './PartySectionUN'; // Adjust path if necessary
 
-// Your existing static questData for the Carousel
-const questData = [
-  {
-    title: "A Merchant's Misfortune",
-    description: 'Rank: C | Deadline: 27th of Alturiak, “Claw of Winter” ',
-    description1: 'A traveling merchant was ambushed by bandits along the King’s Road, losing both his wares and his guards. Recover his stolen goods and, if possible, make sure the scoundrels regret their deeds.',
-    image: 'https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/11/untitled-design-22.jpg?q=49&fit=crop&w=825&dpr=2',
-  },
-  {
-    title: 'Ale and Antics',
-    description: 'Rank: D/Deadline: 3rd of Ches, "The Claw of Sunsets" ',
-    description1: 'The local tavern is in dire need of a bard for their festival, but none have answered the call. If ye have a way with song or tale, come forth and earn a handsome reward in coin and cheer! ',
-    image: 'https://www.telegraph.co.uk/content/dam/gaming/2018/09/18/The-Bards-Tale-game_trans_NvBQzQNjv4BqNJjoeBT78QIaYdkJdEY4CnGTJFJS74MYhNY6w3GNbO8.jpg?imwidth=1920',
-  },
-  {
-    title: 'Escort the Arcane',
-    description: 'Rank: B/Deadline: 15th of Ches, "The Claw of Sunsets" ',
-    description1: 'A reclusive wizard seeks safe passage through the Cragspire Cliffs. Guard him well-his mind holds secrets that many would kill to steal.',
-    image: 'https://i.redd.it/u93tgdewdpnd1.jpeg',
-  },
-  {
-    title: 'Plague Rats of the Undercity',
-    description: 'Rank: D/Deadline: 24th of Alturiak, "Claw of Winter" ',
-    description1: 'The city sewers have become infested with giant rats carrying a vile sickness. Clear them out before the plague spreads to the surface. ',
-    image: 'https://www.enworld.org/attachments/city-sewer_low-glazed-intensity9-render4-v1-png.375460/',
-  },
-];
+// NEW: Import the new Vault section component for the main page
+import VaultSectionUN from './VaultSectionUN'; // Adjust path as needed
 
 export default function MainPageSI(props) {
-  const activeIndex = useQuestStore(state => state.activeIndex);
-  const setActiveIndex = useQuestStore(state => state.setActiveIndex);
-  
-  const [input1, onChangeInput1] = useState(''); // This seems to be for the newsletter in the footer
-  const navigate = useNavigate();
+    const activeIndex = useQuestStore(state => state.activeIndex);
+    const setActiveIndex = useQuestStore(state => state.setActiveIndex);
 
-  const handleSelect = (selectedIndex) => {
-    setActiveIndex(selectedIndex);
-  };
+    const [input1, onChangeInput1] = useState('');
+    const navigate = useNavigate();
+
+    // NEW: State to hold quests fetched from the backend
+    const [availableQuests, setAvailableQuests] = useState([]);
+    const [loadingQuests, setLoadingQuests] = useState(true);
+    const [questsError, setQuestsError] = useState('');
+
+    // Fetch quests from the backend when the component mounts
+    useEffect(() => {
+        const fetchQuests = async () => {
+            setLoadingQuests(true);
+            setQuestsError('');
+            try {
+                const response = await axios.get('http://localhost:3001/api/all-quests');
+                // Filter for uncompleted quests to display in the carousel
+                const uncompleted = response.data.filter(q => q.completed === 0);
+                setAvailableQuests(uncompleted);
+            } catch (err) {
+                console.error("Failed to fetch quests for carousel:", err);
+                setQuestsError("Failed to load quests for display. " + (err.response?.data?.message || err.message));
+            } finally {
+                setLoadingQuests(false);
+            }
+        };
+
+        fetchQuests();
+    }, []); // Empty dependency array means this runs once on mount
+
+    const handleSelect = (selectedIndex) => {
+        setActiveIndex(selectedIndex);
+    };
+
+    // Determine the current quest for display in the text area
+    // Ensure activeIndex doesn't go out of bounds if quests are still loading or none available
+    const currentQuest = availableQuests[activeIndex] || {
+        title: "No Quests Available",
+        description: "Check back later!",
+        description1: "There are no active quests currently posted on the board. Perhaps all adventurers are busy, or new challenges have yet to emerge from the wilds.",
+        image: "https://via.placeholder.com/1200x600?text=No+Quests+Available" // Fallback image
+    };
 
     return (
-        <div 
+        <div
             style={{
                 display: "flex",
                 flexDirection: "column",
-                background: "#FFFFFF", // Main background for the entire page
+                background: "#FFFFFF",
             }}>
-            <div 
+            <div
                 style={{
-                    // height: 4324, // Avoid fixed large heights, let content define it
                     minHeight: "100vh",
                     alignSelf: "stretch",
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center", // Center content horizontally
-                    background: "#F6F6F6", // Background for the content area below header
+                    alignItems: "center",
+                    background: "#F6F6F6",
+                    padding: "0 20px 20px 20px",
                 }}>
                 {/* Header Navigation Section */}
-                <div 
+                <div
                     style={{
-                        width: "100%", // Header takes full width
-                        maxWidth: "1800px", // Max width for header content
+                        width: "100%",
+                        maxWidth: "1800px",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between", // Distribute items
-                        padding: "20px 40px", // Padding for header
+                        justifyContent: "space-between",
+                        padding: "20px 40px",
                         boxSizing: "border-box",
-                        background: "#FFFFFF", // White background for header
-                        borderBottom: "1px solid #E0E0E0" // Slight border for separation
+                        background: "#FFFFFF",
+                        borderBottom: "1px solid #E0E0E0"
                     }}>
                     <div style={{display: "flex", alignItems: "center", gap: "25px", flexWrap: "wrap"}}>
-                        {/* Use Link component for navigation */}
                         <Link to="/joinparty" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>PARTY</Link>
                         <Link to="/quests" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>QUESTS</Link>
                         <Link to="/vault" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>VAULT</Link>
                         <Link to="/inventory" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>INVENTORY</Link>
                         <Link to="/news" style={{textDecoration: 'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>NEWS</Link>
                     </div>
-                    
-                    {/* Central Logo - can be adjusted if it overlaps with centered items */}
-                    <Link to="/MainSI" style={{ flexGrow: 1, textAlign: 'center' }}> 
+
+                    <Link to="/MainSI" style={{ flexGrow: 1, textAlign: 'center' }}>
                         <img
                             alt="Guild Home"
-                            src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
+                            src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"}
                             style={{ width: 70, height: 70, objectFit: "fill", display: 'inline-block' }}
                         />
                     </Link>
 
-                    <button 
+                    <button
                         style={{
                             background: "#3C2A21", color: "#F6F6F6", fontSize: 16,
-                            borderRadius: 50, border: "none", padding: "12px 28px", 
+                            borderRadius: 50, border: "none", padding: "12px 28px",
                             cursor: 'pointer', fontWeight: 500
                         }}
                         onClick={()=>navigate("/profile")}>
@@ -108,57 +117,77 @@ export default function MainPageSI(props) {
 
                 {/* Hero Image Section */}
                 <img
-                    alt="Adventurer's Guild Banner" // Added alt text
-                    src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/1d4wwee2_expires_30_days.png"} 
+                    alt="Adventurer's Guild Banner"
+                    src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/1d4wwee2_expires_30_days.png"}
                     style={{
-                        height: "auto", // Make height auto for responsiveness
-                        maxHeight: "600px", // Limit max height
-                        width: "100%", // Make image take full width of its container
-                        marginBottom: 50, // Adjusted margin
-                        objectFit: "cover", // Use cover for better image scaling
+                        height: "auto",
+                        maxHeight: "600px",
+                        width: "100%",
+                        marginBottom: 50,
+                        objectFit: "cover",
                     }}
                 />
 
                 {/* Welcome Text Section */}
                 <div style={{maxWidth: '1200px', padding: '0 20px', textAlign: 'center', marginBottom: 50}}>
-                    <span 
+                    <span
                         style={{
                             color: "#1A120B",
-                            fontSize: 32, // Adjusted for readability
+                            fontSize: 32,
                             lineHeight: 1.6,
                         }} >
                         {"Welcome to the Adventurer's Guild, home to bold explorers and treasure hunters! Here you can form parties, take on exciting quests, and store your hard-earned rewards in our secure vaults. We welcome all adventurers, from solo travelers to experienced groups, to embark on epic journeys and build their legacies!"}
                     </span>
                 </div>
-                
+
                 <div style={{ height: 1, width: 'calc(100% - 80px)', maxWidth: '1200px', background: "#1A120B", marginBottom: 50 }} />
 
                 {/* Dynamic Party Section Added Here */}
                 <div style={{ width: '100%', maxWidth: '1600px', padding: '0 20px', boxSizing: 'border-box', marginBottom: 50 }}>
                     <PartySection />
                 </div>
-                
+
                 <div style={{ height: 1, width: 'calc(100% - 80px)', maxWidth: '1200px', background: "#1A120B", marginBottom: 50 }} />
 
+                {/* NEW: Vault Section for Main Page */}
+                <VaultSectionUN />
+                {/* END NEW SECTION */}
+
+                <div style={{ height: 1, width: 'calc(100% - 80px)', maxWidth: '1200px', background: "#1A120B", marginBottom: 50 }} />
 
                 {/* Quest Carousel Section */}
                 <div style={{display: "flex", alignItems: "center", marginBottom: 50, padding: '0 40px', boxSizing: 'border-box', width: '100%', maxWidth: '1800px'}}>
-                    <div style={{ flex: 1, marginRight: 40, maxWidth: '450px' }}> {/* Text content for quests */}
+                    <div style={{ flex: 1, marginRight: 40, maxWidth: '450px' }}>
                         <h2 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 80 }}>Quests</h2>
                         <p style={{ color: "#1A120B", fontSize: 20, lineHeight: 1.6, marginBottom: 20 }}>
                             {"Brave souls may take on quests ranging from simple errands to perilous adventures, each offering coin, glory, or rare treasures. Whether slaying beasts, retrieving lost relics, or aiding townsfolk, every quest shapes the legend of those who dare to accept it!"}
                         </p>
-                        <div style={{borderTop: '1px solid #1A120B', paddingTop: 20, marginBottom: 20}}>
-                             <h3 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 28, marginBottom: 5 }}>
-                                {questData[activeIndex].title}
-                             </h3>
-                             <p style={{ color: "#1A120B", fontSize: 12, marginBottom: 15 }}>
-                                {questData[activeIndex].description}
-                             </p>
-                             <p style={{ color: "#1A120B", fontSize: 16, marginBottom: 25, lineHeight: 1.5 }}>
-                                {questData[activeIndex].description1}
-                             </p>
-                        </div>
+                        {loadingQuests && <p style={{ color: '#555', fontSize: 18 }}>Loading quests...</p>}
+                        {questsError && <p style={{ color: 'red', fontSize: 18 }}>Error: {questsError}</p>}
+
+                        {!loadingQuests && availableQuests.length > 0 && (
+                            <div style={{borderTop: '1px solid #1A120B', paddingTop: 20, marginBottom: 20}}>
+                                <h3 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 28, marginBottom: 5 }}>
+                                    {currentQuest.title}
+                                </h3>
+                                <p style={{ color: "#1A120B", fontSize: 12, marginBottom: 15 }}>
+                                    Rank: {currentQuest.difficulty_rating} | Deadline: {currentQuest.deadline ? new Date(currentQuest.deadline).toLocaleDateString() : 'N/A'}
+                                </p>
+                                <p style={{ color: "#1A120B", fontSize: 16, marginBottom: 25, lineHeight: 1.5 }}>
+                                    {currentQuest.description}
+                                </p>
+                            </div>
+                        )}
+                        {!loadingQuests && availableQuests.length === 0 && (
+                             <div style={{borderTop: '1px solid #1A120B', paddingTop: 20, marginBottom: 20}}>
+                                <h3 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 28, marginBottom: 5 }}>
+                                    No Active Quests
+                                </h3>
+                                <p style={{ color: "#1A120B", fontSize: 16, marginBottom: 25, lineHeight: 1.5 }}>
+                                    There are no active quests currently posted on the board. Check back later for new challenges!
+                                </p>
+                            </div>
+                        )}
                         <div style={{display: 'flex', gap: '20px', flexWrap: 'wrap'}}>
                             <button onClick={() => navigate("/quests")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
                                 <span style={{ fontFamily: "'Neue Montreal', sans-serif", color: "#1A120B", fontSize: 20, fontWeight: "bold", textDecoration: "underline" }}>
@@ -172,42 +201,50 @@ export default function MainPageSI(props) {
                             </button>
                         </div>
                     </div>
-                    <div style={{ flex: 2, minWidth: 0 }}> {/* Carousel takes remaining space */}
-                        <Carousel 
-                            fade 
-                            activeIndex={activeIndex} 
-                            onSelect={handleSelect} 
-                            interval={4000}
-                            style={{ maxHeight: '600px' }} // Constrain carousel height
-                            >
-                            {questData.map((quest, idx) => (
-                                <Carousel.Item key={idx} style={{ height: "600px" }}>
-                                    <ExampleCarouselImage 
-                                        src={quest.image} 
-                                        alt={quest.title} // Changed text to alt for accessibility
-                                        style={{ height: "100%", width: "100%", objectFit: "cover", borderRadius: 10 }}
-                                    />
-                                     <Carousel.Caption style={{backgroundColor: "rgba(0,0,0,0.3)", borderRadius: "0 0 10px 10px"}}>
-                                        <h3 style={{fontSize: "1.5rem"}}>{quest.title}</h3>
-                                        {/* <p>{quest.description}</p> */}
-                                     </Carousel.Caption>
-                                </Carousel.Item>
-                            ))}
-                        </Carousel>
+                    <div style={{ flex: 2, minWidth: 0 }}>
+                        {loadingQuests ? (
+                            <div style={{ height: "600px", display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#e0e0e0', borderRadius: 10 }}>
+                                <p>Loading carousel...</p>
+                            </div>
+                        ) : availableQuests.length > 0 ? (
+                            <Carousel
+                                fade
+                                activeIndex={activeIndex}
+                                onSelect={handleSelect}
+                                interval={4000}
+                                style={{ maxHeight: '600px' }}
+                                >
+                                {availableQuests.map((quest, idx) => (
+                                    <Carousel.Item key={quest.quest_id} style={{ height: "600px" }}>
+                                        <ExampleCarouselImage
+                                            src={quest.reward_item_image_url || 'https://via.placeholder.com/1200x600?text=Quest+Image'} // Use reward item image or placeholder
+                                            alt={quest.title}
+                                            style={{ height: "100%", width: "100%", objectFit: "cover", borderRadius: 10 }}
+                                        />
+                                       <Carousel.Caption style={{backgroundColor: "rgba(0,0,0,0.3)", borderRadius: "0 0 10px 10px"}}>
+                                            <h3 style={{fontSize: "1.5rem"}}>{quest.title}</h3>
+                                       </Carousel.Caption>
+                                    </Carousel.Item>
+                                ))}
+                            </Carousel>
+                        ) : (
+                            <div style={{ height: "600px", display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#e0e0e0', borderRadius: 10 }}>
+                                <p>No quests to display in the carousel.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
-                
-                {/* Button below carousel (Your original positioning was a bit unusual, adjusted slightly) */}
-                 <div style={{width: '100%', maxWidth: '1800px', padding: '0 40px', boxSizing: 'border-box', textAlign: 'left', marginTop: 20, marginBottom: 50}}>
-                     <button 
+
+                <div style={{width: '100%', maxWidth: '1800px', padding: '0 40px', boxSizing: 'border-box', textAlign: 'left', marginTop: 20, marginBottom: 50}}>
+                    <button
                         style={{
-                            display: "inline-flex", // Changed to inline-flex
-                            alignItems: "center", // Center items in button
+                            display: "inline-flex",
+                            alignItems: "center",
                             justifyContent: "center",
                             background: "#3C2A21",
                             borderRadius: 50,
                             border: "none",
-                            padding: "15px 100px", // Adjusted padding
+                            padding: "15px 100px",
                             textAlign: "center",
                         }}
                         onClick={()=>navigate("/quests")}>
@@ -217,8 +254,7 @@ export default function MainPageSI(props) {
                     </button>
                 </div>
 
-
-                {/* Footer Section (input1 is now newsletterEmailInput for clarity) */}
+                {/* Footer Section */}
                 <div style={{ width: "100%", padding: "20px 40px", boxSizing: "border-box", marginTop: "auto", background:"#FFFFFF", borderTop: "1px solid #E0E0E0" }}>
                     <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "flex-start", flexWrap: "wrap", gap: "40px", justifyContent: "space-around", padding: "30px 0" }}>
                         <span style={{ color: "#1A120B", fontSize: 32, fontWeight: "bold", flexBasis: '100%', textAlign: 'center', marginBottom: 20 }} >
@@ -239,7 +275,7 @@ export default function MainPageSI(props) {
                                 <input
                                     placeholder={"YOUR EMAIL"}
                                     type="email"
-                                    value={input1} // Assuming input1 is for newsletter here
+                                    value={input1}
                                     onChange={(event)=>onChangeInput1(event.target.value)}
                                     style={{ color: "#1A120B", fontSize: 16, flex: 1, background: "none", border: "none", padding: "15px 0px 15px 25px", boxSizing: "border-box", outline: "none"}}
                                 />

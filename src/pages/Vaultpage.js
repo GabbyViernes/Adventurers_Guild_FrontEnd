@@ -1,2365 +1,271 @@
-import React, {useState} from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from 'axios';
+
+// Default image for items that don't have one specified in the database
+const DEFAULT_ITEM_IMAGE = "https://placehold.co/150x150/cccccc/333333?text=Item";
+
 export default function Vaultpage(props) {
-	const [input1, onChangeInput1] = useState('');
+    const [loggedInUser, setLoggedInUser] = useState(null); // To store the logged-in user's full object
+    const [vaultItems, setVaultItems] = useState([]); // To store items fetched from the vault
+    const [isLoading, setIsLoading] = useState(true); // Loading state for data fetching
+    const [error, setError] = useState(''); // Error state for displaying messages
+    // State to manage the quantity input for each item
+    const [withdrawQuantities, setWithdrawQuantities] = useState({});
     const navigate = useNavigate();
-	return (
-		<div 
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				background: "#FFFFFF",
-			}}>
-			<div 
-				style={{
-					height: 4748,
-					alignSelf: "stretch",
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					background: "#F6F6F6",
-				}}>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						paddingLeft: 40,
-						paddingRight: 40,
-						marginBottom: 13,
-					}}>
-					 <Link 
-    to="/joinparty"
-    style={{
-      textDecoration: 'none',
-      marginRight: 32,
-      marginTop: 58,
-    }}
-  >
-    <span style={{
-      color: "#1A120B",
-      fontSize: 16,
-      cursor: 'pointer',
-      transition: 'color 0.3s',
-    }}>
-      {"Join Party"}
-    </span>
-  </Link>
 
-  <Link 
-    to="/quests"
-    style={{
-      textDecoration: 'none',
-      marginRight: 40,
-      marginTop: 58,
-    }}
-  >
-    <span style={{
-      color: "#1A120B",
-      fontSize: 16,
-      cursor: 'pointer',
-      transition: 'color 0.3s',
-    }}>
-      {"Quests"}
-    </span>
-  </Link>
+    // Helper to get the correct member ID from the user object
+    const getMemberId = (user) => {
+        return user?.member_id || user?.id || user?.userId;
+    };
 
-  <Link 
-    to="/vault"
-    style={{
-      textDecoration: 'none',
-      marginRight: 40,
-      marginTop: 58,
-    }}
-  >
-    <span style={{
-      color: "#1A120B",
-      fontSize: 16,
-      cursor: 'pointer',
-      transition: 'color 0.3s',
-    }}>
-      {"Vault"}
-    </span>
-  </Link>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginTop: 58,
-							marginRight: 249,
-						}} >
-						{"Inventory"}
-					</span>
-					<Link
-										to="/MainSI">
-										<img
-											src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} 
-											style={{
-												width: 87,
-												height: 87,
-												objectFit: "fill",
-												marginLeft: 250,
-												marginTop: 30,
-											}}
-										/></Link>
-					<div 
-						style={{
-							flex: 1,
-							alignSelf: "stretch",
-						}}>
-					</div>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 16,
-							marginTop: 58,
-							marginRight: 64,
-						}} >
-						{"NEWS"}
-					</span>
-					<button 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							background: "#3C2A21",
-							borderRadius: 50,
-							border: "none",
-							paddingTop: 18,
-							paddingBottom: 18,
-							paddingLeft: 35,
-							paddingRight: 35,
-							marginTop: 40,
-							textAlign: "left",
-						}}
-						onClick={()=>navigate("/profile")}>
-						<span 
-							style={{
-								color: "#F6F6F6",
-								fontSize: 16,
-							}} >
-							{"Profile"}
-						</span>
-					</button>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "center",
-						marginBottom: 40,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 80,
-							flex: 1,
-						}} >
-						{"Guild Vault"}
-					</span>
-					<button 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							background: "#B6B6B6",
-							borderRadius: 50,
-							border: "none",
-							paddingTop: 16,
-							paddingBottom: 16,
-							paddingLeft: 15,
-							paddingRight: 15,
-							marginRight: 40,
-							textAlign: "left",
-						}}
-						onClick={()=>alert("Pressed!")}>
-						<img
-							src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/3z20jhq7_expires_30_days.png"} 
-							style={{
-								width: 21,
-								height: 18,
-								objectFit: "fill",
-							}}
-						/>
-					</button>
-					<button 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							background: "#B6B6B6",
-							borderRadius: 50,
-							border: "none",
-							paddingTop: 22,
-							paddingBottom: 22,
-							paddingLeft: 10,
-							paddingRight: 10,
-							textAlign: "left",
-						}}
-						onClick={()=>alert("Pressed!")}>
-						<img
-							src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/zolkkzl1_expires_30_days.png"} 
-							style={{
-								width: 30,
-								height: 6,
-								objectFit: "fill",
-							}}
-						/>
-					</button>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 60,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 45,
-									paddingBottom: 45,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/s2uviujk_expires_30_days.png"} 
-									style={{
-										height: 236,
-										marginLeft: 76,
-										marginRight: 76,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 21,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Crimson Draught"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Uncommon | Quantity: 38 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"A vial of glowing red elixir that mends wounds swiftly. Best consumed before battle, lest its heat turn on the drinker."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 45,
-									paddingBottom: 45,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/pdffk7hs_expires_30_days.png"} 
-									style={{
-										height: 236,
-										marginLeft: 76,
-										marginRight: 76,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Thieveshade Oil"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Common | Quantity: 28 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"A dark, viscous liquid used to dampen blade shine and silence metal. A rogue's best friend."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 48,
-									paddingBottom: 48,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/oonweldn_expires_30_days.png"} 
-									style={{
-										height: 229,
-										marginLeft: 61,
-										marginRight: 61,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 21,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Scroll of Ashen Tongues"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 9 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Unfurl this scroll and speak forgotten words that echo in the minds of the dead. One use only—if you dare."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 58,
-									paddingBottom: 58,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/ni14n25m_expires_30_days.png"} 
-									style={{
-										height: 210,
-										marginLeft: 67,
-										marginRight: 67,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Pouch of Dustroot"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 12 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Filled with a rare powdered herb that grants clarity... or hallucination. Best used with caution."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 60,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 39,
-									paddingBottom: 39,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/bk27mrko_expires_30_days.png"} 
-									style={{
-										height: 247,
-										marginLeft: 10,
-										marginRight: 10,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Throwing Knife & Book"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Common | Quantity: 42 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Lightweight and perfectly balanced. Often favored by adventurers favored by arcane."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 48,
-									paddingBottom: 48,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/n0e406ou_expires_30_days.png"} 
-									style={{
-										height: 230,
-										marginLeft: 61,
-										marginRight: 61,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Ironhelm Guard"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Uncommon | Quantity: 49 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Worn by those who guard the silence of crypts. Dampens fear, but never removes it."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 58,
-									paddingBottom: 58,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/bo0gd2zz_expires_30_days.png"} 
-									style={{
-										height: 210,
-										marginLeft: 55,
-										marginRight: 55,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Wyrmcrest Buckler"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 12 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Offers minor flame resistance. The wyrm etched on its face snarls faintly when near fire."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 45,
-									paddingBottom: 45,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/mosxga0b_expires_30_days.png"} 
-									style={{
-										height: 236,
-										marginLeft: 54,
-										marginRight: 54,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Dusk Watcher’s Bracer"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Uncommon | Quantity: 27 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Hardened leather gloves reinforced with iron, worn by night sentries and monster hunters."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 60,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 46,
-									paddingBottom: 46,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/o59v1yje_expires_30_days.png"} 
-									style={{
-										height: 234,
-										marginLeft: 30,
-										marginRight: 30,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 21,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Bloodreaver Axe"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 3 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"A chipped, brutal weapon that sings with every strike. Said to grow stronger with each foe felled."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 63,
-									paddingBottom: 63,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/ylud7w6r_expires_30_days.png"} 
-									style={{
-										height: 200,
-										marginLeft: 56,
-										marginRight: 56,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Rust-bent Crossbow"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Common | Quantity: 25 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Old, dependable, and a little cranky. Still fires true at close range."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 72,
-									paddingBottom: 72,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/vabsq3op_expires_30_days.png"} 
-									style={{
-										height: 181,
-										marginLeft: 65,
-										marginRight: 65,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Sunstone Amulet"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 4 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Holds a single pulse of radiant light. Blinds the undead and purges minor curses."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 47,
-									paddingBottom: 47,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/g5a0byav_expires_30_days.png"} 
-									style={{
-										height: 232,
-										marginLeft: 44,
-										marginRight: 44,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Warden’s Key"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 17 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"No one remembers what it opens—only that some doors still whisper its name."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 60,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 58,
-									paddingBottom: 58,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/4unfgotd_expires_30_days.png"} 
-									style={{
-										height: 210,
-										marginLeft: 61,
-										marginRight: 61,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Bone Ring of Binding"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 14 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Worn by necromancers to command lesser dead. It hums near burial grounds."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 42,
-									paddingBottom: 42,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/gavsfvim_expires_30_days.png"} 
-									style={{
-										height: 243,
-										marginLeft: 45,
-										marginRight: 45,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Mail of Ironweave"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Very Rare | Quantity: 2 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Forged from woven steel and runes. Light as leather, tough as dragonscale."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 40,
-									paddingBottom: 40,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/tvuoo13h_expires_30_days.png"} 
-									style={{
-										height: 247,
-										marginLeft: 68,
-										marginRight: 68,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Claw of the Abyss"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 12 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Pulled from a rift horror. Can tear through soulbound wards when wielded with hate."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 44,
-									paddingBottom: 44,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/lqw682uz_expires_30_days.png"} 
-									style={{
-										height: 239,
-										marginLeft: 67,
-										marginRight: 67,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Grappling Hook"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Common | Quantity: 29 | Magical: No"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Used by fire escape artists and roof-thieves. Smells faintly of sulfur."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 60,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 40,
-									paddingBottom: 40,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/zb3x2pxn_expires_30_days.png"} 
-									style={{
-										height: 245,
-										marginLeft: 48,
-										marginRight: 48,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Fangblade Dagger"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 21 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Stays sharp forever and drinks a drop of blood from each wound it makes."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 40,
-									paddingBottom: 40,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/vu2scvii_expires_30_days.png"} 
-									style={{
-										height: 246,
-										marginLeft: 73,
-										marginRight: 73,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Vessel of Binding Ashes"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Very Rare | Quantity: 1 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Summons a cursed soul for a single task. Its screams echo long after."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 45,
-									paddingBottom: 45,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/qsebqy88_expires_30_days.png"} 
-									style={{
-										height: 236,
-										marginLeft: 31,
-										marginRight: 31,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Slave’s Oath Chain"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 10 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Worn by freed slaves. Protects against charm and fear spells."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								background: "#E1E1E1",
-								marginBottom: 20,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									background: "#E1E1E1",
-									paddingTop: 50,
-									paddingBottom: 50,
-									marginLeft: 1,
-									marginRight: 1,
-								}}>
-								<img
-									src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/14qt4w9l_expires_30_days.png"} 
-									style={{
-										height: 221,
-										marginLeft: 67,
-										marginRight: 67,
-										alignSelf: "stretch",
-										objectFit: "fill",
-									}}
-								/>
-							</div>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Forgotten Order Sigil"}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Rare | Quantity: 17 | Magical: Yes"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Gripped tightly, grants brief invisibility. Glows dimly in moonlight."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 80,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								height: 326,
-								alignSelf: "stretch",
-								background: "#DDDDDD",
-								marginBottom: 20,
-							}}>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Loading..."}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Uncommon | Quantity: 38 | Magical: Yes: n/a"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								height: 326,
-								alignSelf: "stretch",
-								background: "#DDDDDD",
-								marginBottom: 20,
-							}}>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Loading..."}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Uncommon | Quantity: 38 | Magical: Yes: n/a"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-							marginRight: 12,
-						}}>
-						<div 
-							style={{
-								height: 326,
-								alignSelf: "stretch",
-								background: "#DDDDDD",
-								marginBottom: 20,
-							}}>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Loading..."}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Uncommon | Quantity: 38 | Magical: Yes: n/a"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								height: 326,
-								alignSelf: "stretch",
-								background: "#DDDDDD",
-								marginBottom: 20,
-							}}>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								flexDirection: "column",
-								marginBottom: 40,
-							}}>
-							<div 
-								style={{
-									alignSelf: "stretch",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "flex-start",
-									marginBottom: 15,
-								}}>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 32,
-										marginBottom: 4,
-									}} >
-									{"Loading..."}
-								</span>
-								<span 
-									style={{
-										color: "#1A120B",
-										fontSize: 12,
-									}} >
-									{"Rarity: Uncommon | Quantity: 38 | Magical: Yes: n/a"}
-								</span>
-							</div>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 16,
-								}} >
-								{"Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
-							</span>
-						</div>
-						<div 
-							style={{
-								height: 1,
-								alignSelf: "stretch",
-								background: "#1A120B",
-							}}>
-						</div>
-					</div>
-				</div>
-				<img
-					src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/ejrot3kx_expires_30_days.png"} 
-					style={{
-						width: 111,
-						height: 124,
-						marginBottom: 223,
-						objectFit: "fill",
-					}}
-				/>
-				<div 
-					style={{
-						height: 1,
-						alignSelf: "stretch",
-						background: "#1A120B",
-						marginBottom: 109,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-				</div>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 86,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 32,
-							fontWeight: "bold",
-							marginRight: 178,
-						}} >
-						{"ADVENTURER’S GUILD"}
-					</span>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
-							marginRight: 252,
-						}}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"HOME"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"PARTY"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"QUESTS"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-								marginBottom: 4,
-							}} >
-							{"VAULT"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 20,
-								fontWeight: "bold",
-							}} >
-							{"CONTACT"}
-						</span>
-					</div>
-					<div 
-						style={{
-							flex: 1,
-						}}>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								alignItems: "center",
-								marginBottom: 22,
-							}}>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									marginRight: 48,
-								}} >
-								{"SIGN UP"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									marginRight: 47,
-								}} >
-								{"TO OUR"}
-							</span>
-							<span 
-								style={{
-									color: "#1A120B",
-									fontSize: 28,
-									fontWeight: "bold",
-									flex: 1,
-								}} >
-								{"NEWSLETTER"}
-							</span>
-						</div>
-						<div 
-							style={{
-								alignSelf: "stretch",
-								display: "flex",
-								alignItems: "center",
-								background: "#E5E5CB",
-								borderRadius: 50,
-								paddingTop: 10,
-								paddingBottom: 10,
-								paddingLeft: 40,
-								paddingRight: 10,
-							}}>
-							<input
-								placeholder={"YOUR EMAIL"}
-								value={input1}
-								onChange={(event)=>onChangeInput1(event.target.value)}
-								style={{
-									color: "#1A120B",
-									fontSize: 20,
-									flex: 1,
-									alignSelf: "stretch",
-									background: "none",
-									border: "none",
-									paddingTop: 23,
-									paddingBottom: 23,
-								}}
-							/>
-							<img
-								src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/ps0im5fk_expires_30_days.png"} 
-								style={{
-									width: 60,
-									height: 60,
-									objectFit: "fill",
-								}}
-							/>
-						</div>
-					</div>
-				</div>
-				<img
-					src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/d2kf3ad7_expires_30_days.png"} 
-					style={{
-						height: 308,
-						marginBottom: 130,
-						marginLeft: 40,
-						marginRight: 40,
-						alignSelf: "stretch",
-						objectFit: "fill",
-					}}
-				/>
-				<div 
-					style={{
-						alignSelf: "stretch",
-						display: "flex",
-						alignItems: "flex-start",
-						marginBottom: 40,
-						marginLeft: 40,
-						marginRight: 40,
-					}}>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 12,
-							fontWeight: "bold",
-							marginRight: 374,
-							width: 144,
-						}} >
-						{"© ADVENTURER’S GUILD/\nALL RIGHTS RESERVED"}
-					</span>
-					<span 
-						style={{
-							color: "#1A120B",
-							fontSize: 12,
-							fontWeight: "bold",
-							flex: 1,
-						}} >
-						{"TERMS AND CONDITIONS"}
-					</span>
-					<div 
-						style={{
-							flexShrink: 0,
-							display: "flex",
-							alignItems: "center",
-							paddingRight: 3,
-						}}>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 12,
-								fontWeight: "bold",
-								marginRight: 89,
-							}} >
-							{"FACEBOOK"}
-						</span>
-						<span 
-							style={{
-								color: "#1A120B",
-								fontSize: 12,
-								fontWeight: "bold",
-							}} >
-							{"INSTAGRAM"}
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	)
+    // Callback to fetch items currently in the vault
+    const fetchVaultItems = useCallback(async () => {
+        setIsLoading(true); // Start loading
+        setError(''); // Clear any previous errors
+        setVaultItems([]); // Clear previous items
+        setWithdrawQuantities({}); // Clear quantities on re-fetch
+
+        const userString = localStorage.getItem('loggedInUser');
+        let currentUserId = null;
+
+        if (userString) {
+            try {
+                const user = JSON.parse(userString);
+                currentUserId = getMemberId(user);
+                setLoggedInUser(user); // Store the full user object
+            } catch (e) {
+                console.error("Error parsing loggedInUser from localStorage:", e);
+                setError("Invalid session. Please log in again.");
+                localStorage.removeItem('loggedInUser'); // Clear potentially corrupted data
+                setIsLoading(false);
+                navigate("/login"); // Redirect to login
+                return;
+            }
+        } else {
+            // User not logged in, set error and redirect
+            setError("You must be logged in to access the vault.");
+            setIsLoading(false);
+            navigate("/login");
+            return;
+        }
+
+        // Only proceed to fetch vault items if a valid user ID is obtained
+        if (currentUserId) {
+            try {
+                const response = await axios.get('http://localhost:3001/api/vault/items');
+                setVaultItems(response.data); // Update state with fetched items
+                // Initialize withdrawQuantities for each item to 1 or the item's quantity if it's less than 1
+                const initialQuantities = {};
+                response.data.forEach(item => {
+                    initialQuantities[item.item_id] = item.quantity > 0 ? 1 : 0;
+                });
+                setWithdrawQuantities(initialQuantities);
+            } catch (err) {
+                console.error("Failed to fetch vault items:", err);
+                setError("Failed to load vault items. " + (err.response?.data?.message || err.message));
+            } finally {
+                setIsLoading(false); // End loading regardless of success or failure
+            }
+        } else {
+            setIsLoading(false); // If no user ID, ensure loading is off
+        }
+    }, [navigate]); // navigate is a dependency of useCallback
+
+    // useEffect hook to call fetchVaultItems when the component mounts
+    useEffect(() => {
+        fetchVaultItems();
+    }, [fetchVaultItems]); // Depend on the memoized fetchVaultItems
+
+    // Handler for quantity input changes
+    const handleQuantityChange = (itemId, value) => {
+        setWithdrawQuantities(prevQuantities => ({
+            ...prevQuantities,
+            [itemId]: Math.max(1, parseInt(value, 10) || 1) // Ensure quantity is at least 1
+        }));
+    };
+
+    // Function to handle withdrawing an item
+    const handleWithdrawItem = async (item) => {
+        const memberId = getMemberId(loggedInUser);
+        if (!memberId) {
+            alert("You must be logged in to withdraw items.");
+            navigate("/login");
+            return;
+        }
+
+        const quantityToWithdraw = withdrawQuantities[item.item_id];
+
+        if (!quantityToWithdraw || quantityToWithdraw <= 0) {
+            alert("Please enter a valid quantity to withdraw.");
+            return;
+        }
+
+        if (quantityToWithdraw > item.quantity) {
+            alert(`You can only withdraw up to ${item.quantity} of this item.`);
+            return;
+        }
+
+        if (!window.confirm(`Are you sure you want to withdraw ${quantityToWithdraw} of ${item.name}? It will be added to your personal inventory.`)) {
+            return; // User cancelled
+        }
+
+        setIsLoading(true); // Indicate loading during the withdrawal action
+
+        try {
+            // Corrected API call to match backend expectation (POST to /api/vault/withdraw with body)
+            const response = await axios.post(`http://localhost:3001/api/vault/withdraw`, {
+                item_id: item.item_id,
+                member_id: memberId,
+                quantity: quantityToWithdraw,
+            });
+
+            alert(response.data.message); // Display success message
+            fetchVaultItems(); // Re-fetch vault items to update the list and reset quantities
+        } catch (err) {
+            console.error("Error withdrawing item:", err);
+            alert(`Failed to withdraw item: ${err.response?.data?.message || err.message}`); // Display specific error from backend
+        } finally {
+            setIsLoading(false); // Reset loading state
+        }
+    };
+
+    // input1 state is present in your original code, assuming it's for the footer newsletter input
+    const [input1, onChangeInput1] = useState('');
+
+    // Conditional rendering for loading or error states
+    if (isLoading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#F6F6F6' }}>
+                <p style={{ fontSize: '20px', color: '#3C2A21' }}>Loading vault...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#F6F6F6', padding: '20px' }}>
+                <p style={{ fontSize: '20px', color: 'red', marginBottom: '20px' }}>{error}</p>
+                <button onClick={() => navigate("/login")} style={{ display: 'block', margin: '0 auto', padding: '10px 20px', background: '#3C2A21', color: 'white', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>Go to Login</button>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ display: "flex", flexDirection: "column", background: "#FFFFFF" }}>
+            <div style={{ minHeight: "100vh", alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "center", background: "#F6F6F6", padding: "0 20px 20px 20px" }}>
+                {/* Header Navigation - adapted for consistency */}
+                <div style={{ width: '100%', maxWidth: '1200px', display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 0", marginBottom: 30, borderBottom: "1px solid #ddd", background: "#FFFFFF", paddingLeft: "20px", paddingRight: "20px", boxSizing: 'border-box' }}>
+                    <div style={{display: "flex", alignItems: "center", gap: "25px", flexWrap: "wrap"}}>
+                        <Link to="/joinparty" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>PARTY</Link>
+                        <Link to="/quests" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>QUESTS</Link>
+                        <Link to="/vault" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>VAULT</Link>
+                        <Link to="/inventory" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>INVENTORY</Link>
+                        <Link to="/news" style={{textDecoration:'none', color: '#1A120B', fontSize: 16, fontWeight: 500}}>NEWS</Link>
+                    </div>
+                    <Link to="/MainSI" style={{ flexGrow: 1, textAlign: 'center', margin: '0 20px' }}>
+                        <img alt="Guild Home" src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/2lvzpgcl_expires_30_days.png"} style={{ width: 70, height: 70, objectFit: "fill", display: 'inline-block' }} />
+                    </Link>
+                    <button onClick={() => navigate("/profile")} style={{background: "#3C2A21", color: "white", border: 'none', padding: '12px 25px', borderRadius: 50, cursor: 'pointer', fontSize: 16, fontWeight: 500}}>Profile</button>
+                </div>
+
+                {/* Vault Content */}
+                <div style={{width: '100%', maxWidth: '1200px', background: 'white', padding: '30px 40px', borderRadius: 8, boxShadow: '0 2px 10px rgba(0,0,0,0.1)'}}>
+                    <span style={{ color: "#1A120B", fontSize: 48, marginBottom: 30, display: 'block', textAlign: 'center', fontFamily: "'Times New Roman', Times, serif" }} >
+                        Guild Vault
+                    </span>
+                    <p style={{ color: "#1A120B", fontSize: 20, lineHeight: 1.6, marginBottom: 40, textAlign: 'center' }}>
+                        The guild’s Vault System offers a secure haven for adventurers to store their hard-earned treasures, rare artifacts, and excess coin. Only the rightful owner—or those bearing a guild-sanctioned sigil—may access its well-guarded depths.
+                    </p>
+
+                    {error && <p style={{color: 'red', textAlign: 'center', marginBottom: 20}}>{error}</p>}
+
+                    <h2 style={{fontSize: 28, color: "#3C2A21", marginBottom: 20, borderBottom: '2px solid #3C2A21', paddingBottom:10}}>Items in Vault ({vaultItems.length})</h2>
+
+                    {vaultItems.length > 0 ? (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '20px', padding: '20px 0' }}>
+                            {vaultItems.map(item => (
+                                <div key={item.item_id} style={{ border: '1px solid #ddd', borderRadius: 8, padding: 15, background: '#f9f9f9', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                                    <img src={item.image_url || DEFAULT_ITEM_IMAGE} alt={item.name} style={{ width: '100%', height: 120, objectFit: 'cover', borderRadius: 4, marginBottom: 10 }} onError={(e) => { e.target.onerror = null; e.target.src=DEFAULT_ITEM_IMAGE; }}/>
+                                    <h3 style={{ fontSize: 18, color: '#1A120B', margin: '0 0 5px 0' }}>{item.name}</h3>
+                                    <p style={{ fontSize: 13, color: '#555', margin: '0 0 5px 0' }}>Rarity: {item.rarity || 'N/A'}</p>
+                                    <p style={{ fontSize: 13, color: '#555', margin: '0 0 10px 0' }}>Value: {item.value || 0} Gold</p>
+                                    <p style={{ fontSize: 14, color: '#1A120B', margin: '0 0 10px 0', fontWeight: 'bold' }}>Available: {item.quantity || 0}</p> {/* Display available Quantity */}
+                                    <div style={{ marginBottom: 10 }}>
+                                        <label htmlFor={`qty-${item.item_id}`} style={{fontSize: 14, color: '#555', display: 'block', marginBottom: 5}}>Withdraw Quantity:</label>
+                                        <input
+                                            id={`qty-${item.item_id}`}
+                                            type="number"
+                                            min="1"
+                                            value={withdrawQuantities[item.item_id] || 1}
+                                            onChange={(e) => handleQuantityChange(item.item_id, e.target.value)}
+                                            style={{
+                                                width: '80px',
+                                                padding: '5px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #ccc',
+                                                textAlign: 'center'
+                                            }}
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={() => handleWithdrawItem(item)}
+                                        style={{
+                                            background: "#5cb85c",
+                                            color: "white",
+                                            border: 'none',
+                                            padding: '8px 15px',
+                                            borderRadius: 20,
+                                            cursor: 'pointer',
+                                            fontSize: 14,
+                                            // Disable button if quantity is 0 or less, or if input is invalid
+                                            opacity: (item.quantity <= 0 || !withdrawQuantities[item.item_id] || withdrawQuantities[item.item_id] > item.quantity) ? 0.6 : 1,
+                                            cursor: (item.quantity <= 0 || !withdrawQuantities[item.item_id] || withdrawQuantities[item.item_id] > item.quantity) ? 'not-allowed' : 'pointer'
+                                        }}
+                                        disabled={item.quantity <= 0 || !withdrawQuantities[item.item_id] || withdrawQuantities[item.item_id] > item.quantity}
+                                    >
+                                        Withdraw
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p style={{textAlign: 'center', fontSize: 16, color: '#555'}}>The guild vault is currently empty.</p>
+                    )}
+                </div>
+
+                {/* Footer Section */}
+                <div style={{ width: "100%", padding: "20px 40px", boxSizing: "border-box", marginTop: "auto", background: "#FFFFFF", borderTop: "1px solid #E0E0E0" }}>
+                    <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "flex-start", flexWrap: "wrap", gap: "40px", justifyContent: "space-around", padding: "30px 0" }}>
+                        <span style={{ color: "#1A120B", fontSize: 32, fontWeight: "bold", flexBasis: '100%', textAlign: 'center', marginBottom: 20 }} >ADVENTURER’S GUILD</span>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                            {["HOME", "PARTY", "QUESTS", "VAULT", "CONTACT"].map(item => (
+                                <Link key={item} to={`/${item.toLowerCase()}`} style={{textDecoration: 'none', color: '#1A120B', fontSize: 18, marginBottom: 8, fontWeight: 500}}>{item}</Link>
+                            ))}
+                        </div>
+                        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: "280px", maxWidth: '400px' }}>
+                            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", marginBottom: 15 }}>
+                                <span style={{ color: "#1A120B", fontSize: 24, fontWeight: "bold", marginRight: 10 }} > SIGN UP </span>
+                                <span style={{ color: "#1A120B", fontSize: 24, fontWeight: "bold", marginRight: 10 }} > TO OUR </span>
+                                <span style={{ color: "#1A120B", fontSize: 24, fontWeight: "bold" }} > NEWSLETTER </span>
+                            </div>
+                            <div style={{ display: "flex", alignItems: "center", background: "#E5E5CB", borderRadius: 50, paddingRight: 10 }}>
+                                <input placeholder={"YOUR EMAIL"} type="email" value={input1} onChange={(event)=>onChangeInput1(event.target.value)} style={{ color: "#1A120B", fontSize: 16, flex: 1, background: "none", border: "none", padding: "15px 0px 15px 25px", boxSizing: "border-box", outline: "none"}} />
+                                <img alt="Submit Newsletter" src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/c9thllh0_expires_30_days.png"} style={{ width: 40, height: 40, objectFit: "fill", cursor: "pointer" }} onClick={() => alert("Newsletter signup for: " + input1)} />
+                            </div>
+                        </div>
+                    </div>
+                    <img alt="Footer banner" src={"https://storage.googleapis.com/tagjs-prod.appspot.com/v1/5pN02KiAxF/d2kf3ad7_expires_30_days.png"} style={{ height: "auto", maxHeight: 200, margin: "30px auto", display:'block', width: "100%", maxWidth:"1200px", objectFit: "cover" }}/>
+                    <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "20px", paddingBottom: "20px", justifyContent: "space-between", fontSize: 12, color: "#1A120B" }}>
+                        <span>© ADVENTURER’S GUILD/ALL RIGHTS RESERVED</span>
+                        <span>TERMS AND CONDITIONS</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                            <span>FACEBOOK</span>
+                            <span>INSTAGRAM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
 }
