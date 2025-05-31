@@ -1,44 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import ExampleCarouselImage from '../components/ExampleCarouselImage';
-import '../styles/QuestSectionUN.css';
+import ExampleCarouselImage from '../components/ExampleCarouselImage'; // Make sure this path is correct
+import '../styles/QuestSectionUN.css'; // Make sure this path is correct
+import axios from 'axios';
 
-const questData = [
-  {
-    title: "A Merchant's Misfortune",
-    description: 'Rank: C | Deadline: 27th of Alturiak, “Claw of Winter” ',
-    description1: 'A traveling merchant was ambushed by bandits along the King’s Road, losing both his wares and his guards. Recover his stolen goods and, if possible, make sure the scoundrels regret their deeds.',
-    image: 'https://static1.thegamerimages.com/wordpress/wp-content/uploads/2024/11/untitled-design-22.jpg?q=49&fit=crop&w=825&dpr=2',
-  },
-  {
-    title: 'Ale and Antics',
-    description: 'Rank: D/Deadline: 3rd of Ches, "The Claw of Sunsets" ',
-    description1: 'The local tavern is in dire need of a bard for their festival, but none have answered the call. If ye have a way with song or tale, come forth and earn a handsome reward in coin and cheer! ',
-    image: 'https://www.telegraph.co.uk/content/dam/gaming/2018/09/18/The-Bards-Tale-game_trans_NvBQzQNjv4BqNJjoeBT78QIaYdkJdEY4CnGTJFJS74MYhNY6w3GNbO8.jpg?imwidth=1920',
-  },
-  {
-    title: 'Escort the Arcane',
-    description: 'Rank: B/Deadline: 15th of Ches, "The Claw of Sunsets" ',
-    description1: 'A reclusive wizard seeks safe passage through the Cragspire Cliffs. Guard him well-his mind holds secrets that many would kill to steal.',
-    image: 'https://i.redd.it/u93tgdewdpnd1.jpeg',
-  },
-  {
-    title: 'Plague Rats of the Undercity',
-    description: 'Rank: D/Deadline: 24th of Alturiak, "Claw of Winter" ',
-    description1: 'The city sewers have become infested with giant rats carrying a vile sickness. Clear them out before the plague spreads to the surface. ',
-    image: 'https://www.enworld.org/attachments/city-sewer_low-glazed-intensity9-render4-v1-png.375460/',
-  },
-];
+// Removed the hardcoded questData
 
-function QuestsSection() {
+function QuestSectionUN() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [quests, setQuests] = useState([]); // State to hold quests fetched from backend
+  const [loadingQuests, setLoadingQuests] = useState(true);
+  const [questsError, setQuestsError] = useState('');
+
+  useEffect(() => {
+    const fetchQuests = async () => {
+      setLoadingQuests(true);
+      setQuestsError('');
+      try {
+        const response = await axios.get('http://localhost:3001/api/all-quests');
+        // Filter out completed quests if your backend doesn't do it
+        // Assuming 'completed' is a boolean or 0/1
+        const uncompletedQuests = response.data.filter(quest => !quest.completed || quest.completed === 0);
+        setQuests(uncompletedQuests);
+      } catch (err) {
+        console.error("Failed to fetch quests:", err);
+        setQuestsError("Failed to load quests. " + (err.response?.data?.message || err.message));
+      } finally {
+        setLoadingQuests(false);
+      }
+    };
+
+    fetchQuests();
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleSelect = (selectedIndex) => {
     setActiveIndex(selectedIndex);
   };
 
-  const activeQuest = questData[activeIndex];
-  
+  if (loadingQuests) {
+    return (
+      <div className="quests-section" style={{ textAlign: 'center', padding: '50px' }}>
+        <p>Loading quests...</p>
+      </div>
+    );
+  }
+
+  if (questsError) {
+    return (
+      <div className="quests-section" style={{ textAlign: 'center', padding: '50px', color: 'red' }}>
+        <p>{questsError}</p>
+      </div>
+    );
+  }
+
+  if (quests.length === 0) {
+    return (
+      <div className="quests-section" style={{ textAlign: 'center', padding: '50px' }}>
+        <p>No active quests available at the moment. Check back later!</p>
+      </div>
+    );
+  }
+
+  // Ensure activeIndex is within bounds
+  const currentActiveIndex = activeIndex < quests.length ? activeIndex : 0;
+  const activeQuest = quests[currentActiveIndex];
+
+  // If after all checks, activeQuest is somehow undefined (e.g., quests array became empty after initial load)
+  if (!activeQuest) {
+      return (
+          <div className="quests-section" style={{ textAlign: 'center', padding: '50px' }}>
+              <p>No quest data to display.</p>
+          </div>
+      );
+  }
+
   return (
     <div className="quests-section">
       <div className="quests-header">
@@ -48,19 +83,33 @@ function QuestsSection() {
 
       <div className="quests-body">
         <div className="quest-details">
-          <h3>{questData[activeIndex].title}</h3>
-          <p className="quest-meta">{activeQuest.description}</p>
-          <p className="quest-desc">{activeQuest.description1}</p>
+          {/* Use data from the fetched 'activeQuest' */}
+          <h3>{activeQuest.title}</h3>
+          {/* Adapt these fields based on your backend's quest object structure */}
+          <p className="quest-meta">
+            Rank: {activeQuest.difficulty_rating} | Deadline: {activeQuest.deadline ? new Date(activeQuest.deadline).toLocaleDateString() : 'N/A'}
+          </p>
+          <p className="quest-desc">{activeQuest.description}</p>
+          {/* You might want to connect these buttons to the logic from QuestsPage (handleQuestCompletion) */}
           <button className="bare-button">Join Quest Party</button>
           <button className="bare-button">Solo Quest</button>
           <button className="rounded-button">Discover More</button>
         </div>
 
         <div className="quest-carousel">
-        <Carousel fade activeIndex={activeIndex} onSelect={handleSelect} interval={4000}>
-            {questData.map((quest, idx) => (
-              <Carousel.Item key={idx}>
-                <ExampleCarouselImage src={quest.image} text={quest.title} />
+          <Carousel fade activeIndex={currentActiveIndex} onSelect={handleSelect} interval={4000}>
+            {quests.map((quest, idx) => (
+              <Carousel.Item key={quest.quest_id || idx} style={{ display: 'flex', flexDirection: 'column' }}> {/* Added flex container */}
+                <div style={{ flex: '0 0 auto' }}> {/* Ensures the image takes up only necessary height and stays at the top */}
+                  <ExampleCarouselImage
+                    src={quest.quest_image_url || quest.image}
+                    text={quest.title}
+                    style={{ objectFit: 'contain', maxHeight: '400px', width: '100%' }} // Adjust maxHeight as needed
+                  />
+                </div>
+                <Carousel.Caption style={{ backgroundColor: "rgba(0,0,0,0.3)", borderRadius: "0 0 10px 10px", marginTop: 'auto' }}> {/* Pushes caption to the bottom */}
+                  <h3 style={{ fontSize: "1.5rem" }}>{quest.title}</h3>
+                </Carousel.Caption>
               </Carousel.Item>
             ))}
           </Carousel>
@@ -70,4 +119,4 @@ function QuestsSection() {
   );
 }
 
-export default QuestsSection;
+export default QuestSectionUN;

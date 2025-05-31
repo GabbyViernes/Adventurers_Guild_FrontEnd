@@ -1,62 +1,30 @@
-import React, { useState, useEffect } from "react"; // Added useEffect
-import Carousel from 'react-bootstrap/Carousel';
-import ExampleCarouselImage from '../components/ExampleCarouselImage'; // Assuming this component exists
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import useQuestStore from "../components/QuestCarousel"; // Assuming this handles carousel state
-import axios from 'axios'; // Import axios for API calls
+import React, { useState, useEffect } from "react"; // useEffect might still be used for other purposes
+import { Link, useNavigate } from "react-router-dom";
+// import useQuestStore from "../components/QuestCarousel"; // Removed as QuestsSection manages its own state
+
+// Import axios if needed for other parts of MainPageSI, otherwise can be removed if only for quests
+// import axios from 'axios';
 
 // Import the dynamic PartySection component
 import PartySection from './PartySectionUN'; // Adjust path if necessary
 
-// NEW: Import the new Vault section component for the main page
+// Import the new Vault section component for the main page
 import VaultSectionUN from './VaultSectionUN'; // Adjust path as needed
 
+// NEW: Import the QuestsSection component
+import QuestsSection from './QuestSectionUN'; // Adjust path if necessary (e.g., '../components/QuestsSection')
+
 export default function MainPageSI(props) {
-    const activeIndex = useQuestStore(state => state.activeIndex);
-    const setActiveIndex = useQuestStore(state => state.setActiveIndex);
+    // activeIndex and setActiveIndex from useQuestStore are removed as QuestsSection handles its own.
+    // If useQuestStore is used for other carousels, you can keep it.
 
     const [input1, onChangeInput1] = useState('');
     const navigate = useNavigate();
 
-    // NEW: State to hold quests fetched from the backend
-    const [availableQuests, setAvailableQuests] = useState([]);
-    const [loadingQuests, setLoadingQuests] = useState(true);
-    const [questsError, setQuestsError] = useState('');
+    // Quest fetching logic (availableQuests, loadingQuests, questsError, and related useEffect)
+    // is REMOVED from MainPageSI, as QuestsSection now handles this internally.
 
-    // Fetch quests from the backend when the component mounts
-    useEffect(() => {
-        const fetchQuests = async () => {
-            setLoadingQuests(true);
-            setQuestsError('');
-            try {
-                const response = await axios.get('http://localhost:3001/api/all-quests');
-                // Filter for uncompleted quests to display in the carousel
-                const uncompleted = response.data.filter(q => q.completed === 0);
-                setAvailableQuests(uncompleted);
-            } catch (err) {
-                console.error("Failed to fetch quests for carousel:", err);
-                setQuestsError("Failed to load quests for display. " + (err.response?.data?.message || err.message));
-            } finally {
-                setLoadingQuests(false);
-            }
-        };
-
-        fetchQuests();
-    }, []); // Empty dependency array means this runs once on mount
-
-    const handleSelect = (selectedIndex) => {
-        setActiveIndex(selectedIndex);
-    };
-
-    // Determine the current quest for display in the text area
-    // Ensure activeIndex doesn't go out of bounds if quests are still loading or none available
-    const currentQuest = availableQuests[activeIndex] || {
-        title: "No Quests Available",
-        description: "Check back later!",
-        description1: "There are no active quests currently posted on the board. Perhaps all adventurers are busy, or new challenges have yet to emerge from the wilds.",
-        image: "https://via.placeholder.com/1200x600?text=No+Quests+Available" // Fallback image
-    };
+    // The 'currentQuest' logic is also removed as QuestsSection will display active quest details.
 
     return (
         <div
@@ -155,87 +123,21 @@ export default function MainPageSI(props) {
 
                 <div style={{ height: 1, width: 'calc(100% - 80px)', maxWidth: '1200px', background: "#1A120B", marginBottom: 50 }} />
 
-                {/* Quest Carousel Section */}
-                <div style={{display: "flex", alignItems: "center", marginBottom: 50, padding: '0 40px', boxSizing: 'border-box', width: '100%', maxWidth: '1800px'}}>
-                    <div style={{ flex: 1, marginRight: 40, maxWidth: '450px' }}>
-                        <h2 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 80 }}>Quests</h2>
-                        <p style={{ color: "#1A120B", fontSize: 20, lineHeight: 1.6, marginBottom: 20 }}>
-                            {"Brave souls may take on quests ranging from simple errands to perilous adventures, each offering coin, glory, or rare treasures. Whether slaying beasts, retrieving lost relics, or aiding townsfolk, every quest shapes the legend of those who dare to accept it!"}
-                        </p>
-                        {loadingQuests && <p style={{ color: '#555', fontSize: 18 }}>Loading quests...</p>}
-                        {questsError && <p style={{ color: 'red', fontSize: 18 }}>Error: {questsError}</p>}
-
-                        {!loadingQuests && availableQuests.length > 0 && (
-                            <div style={{borderTop: '1px solid #1A120B', paddingTop: 20, marginBottom: 20}}>
-                                <h3 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 28, marginBottom: 5 }}>
-                                    {currentQuest.title}
-                                </h3>
-                                <p style={{ color: "#1A120B", fontSize: 12, marginBottom: 15 }}>
-                                    Rank: {currentQuest.difficulty_rating} | Deadline: {currentQuest.deadline ? new Date(currentQuest.deadline).toLocaleDateString() : 'N/A'}
-                                </p>
-                                <p style={{ color: "#1A120B", fontSize: 16, marginBottom: 25, lineHeight: 1.5 }}>
-                                    {currentQuest.description}
-                                </p>
-                            </div>
-                        )}
-                        {!loadingQuests && availableQuests.length === 0 && (
-                             <div style={{borderTop: '1px solid #1A120B', paddingTop: 20, marginBottom: 20}}>
-                                <h3 style={{ fontFamily: "'Cloister Black', serif", color: "#1A120B", fontSize: 28, marginBottom: 5 }}>
-                                    No Active Quests
-                                </h3>
-                                <p style={{ color: "#1A120B", fontSize: 16, marginBottom: 25, lineHeight: 1.5 }}>
-                                    There are no active quests currently posted on the board. Check back later for new challenges!
-                                </p>
-                            </div>
-                        )}
-                        <div style={{display: 'flex', gap: '20px', flexWrap: 'wrap'}}>
-                            <button onClick={() => navigate("/quests")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
-                                <span style={{ fontFamily: "'Neue Montreal', sans-serif", color: "#1A120B", fontSize: 20, fontWeight: "bold", textDecoration: "underline" }}>
-                                    {"Join Quest Party"}
-                                </span>
-                            </button>
-                            <button onClick={() => navigate("/quests")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
-                                <span style={{ fontFamily: "'Neue Montreal', sans-serif", color: "#1A120B", fontSize: 20, fontWeight: "bold", textDecoration: "underline" }}>
-                                    {"Solo Quest"}
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                    <div style={{ flex: 2, minWidth: 0 }}>
-                        {loadingQuests ? (
-                            <div style={{ height: "600px", display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#e0e0e0', borderRadius: 10 }}>
-                                <p>Loading carousel...</p>
-                            </div>
-                        ) : availableQuests.length > 0 ? (
-                            <Carousel
-                                fade
-                                activeIndex={activeIndex}
-                                onSelect={handleSelect}
-                                interval={4000}
-                                style={{ maxHeight: '600px' }}
-                                >
-                                {availableQuests.map((quest, idx) => (
-                                    <Carousel.Item key={quest.quest_id} style={{ height: "600px" }}>
-                                        <ExampleCarouselImage
-                                            src={quest.reward_item_image_url || 'https://via.placeholder.com/1200x600?text=Quest+Image'} // Use reward item image or placeholder
-                                            alt={quest.title}
-                                            style={{ height: "100%", width: "100%", objectFit: "cover", borderRadius: 10 }}
-                                        />
-                                       <Carousel.Caption style={{backgroundColor: "rgba(0,0,0,0.3)", borderRadius: "0 0 10px 10px"}}>
-                                            <h3 style={{fontSize: "1.5rem"}}>{quest.title}</h3>
-                                       </Carousel.Caption>
-                                    </Carousel.Item>
-                                ))}
-                            </Carousel>
-                        ) : (
-                            <div style={{ height: "600px", display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#e0e0e0', borderRadius: 10 }}>
-                                <p>No quests to display in the carousel.</p>
-                            </div>
-                        )}
-                    </div>
+                {/* MODIFIED: Quest Section - Now using the QuestsSection component */}
+                <div style={{ width: '100%', maxWidth: '1800px', padding: '0 20px', boxSizing: 'border-box', marginBottom: 50 }}>
+                    {/* The previous detailed layout for quest text on the left and carousel on the right
+                      is now encapsulated within the QuestsSection component.
+                      QuestsSection will handle its own layout, data fetching, and display.
+                    */}
+                    <QuestsSection />
                 </div>
+                {/* END MODIFIED Quest Section */}
 
-                <div style={{width: '100%', maxWidth: '1800px', padding: '0 40px', boxSizing: 'border-box', textAlign: 'left', marginTop: 20, marginBottom: 50}}>
+
+                {/* "DISCOVER MORE QUESTS" button can remain if you want a prominent CTA below the QuestsSection */}
+                {/* Alternatively, if QuestsSection has its own "Discover More" that's sufficient, you might remove this one */}
+                <div style={{width: '100%', maxWidth: '1800px', padding: '0 40px', boxSizing: 'border-box', textAlign: 'center', marginTop: 0, marginBottom: 50}}>
+                     {/* Centered the button for better consistency if QuestsSection is centered */}
                     <button
                         style={{
                             display: "inline-flex",
@@ -246,6 +148,7 @@ export default function MainPageSI(props) {
                             border: "none",
                             padding: "15px 100px",
                             textAlign: "center",
+                            cursor: "pointer" // Added cursor pointer
                         }}
                         onClick={()=>navigate("/quests")}>
                         <span style={{ color: "#F6F6F6", fontSize: 16 }} >
@@ -261,8 +164,9 @@ export default function MainPageSI(props) {
                             ADVENTURER’S GUILD
                         </span>
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                            {/* Corrected HOME link to /mainSI or / based on your routing for home */}
                             {["HOME", "PARTY", "QUESTS", "VAULT", "CONTACT"].map(item => (
-                                <Link key={item} to={`/${item.toLowerCase()}`} style={{textDecoration: 'none', color: '#1A120B', fontSize: 18, marginBottom: 8, fontWeight: 500}}>{item}</Link>
+                                <Link key={item} to={item === "HOME" ? "/mainSI" : `/${item.toLowerCase()}`} style={{textDecoration: 'none', color: '#1A120B', fontSize: 18, marginBottom: 8, fontWeight: 500}}>{item}</Link>
                             ))}
                         </div>
                         <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: "280px", maxWidth: '400px' }}>
